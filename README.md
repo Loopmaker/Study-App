@@ -1,73 +1,51 @@
-# React + TypeScript + Vite
+# Study App 🎵
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple and relaxing companion that helps you focus with calming background sounds and music.
 
-Currently, two official plugins are available:
+## What is this?
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Drowse is designed to help you concentrate while studying or working. Whether you need soft background music, nature sounds, or ambient effects, this app provides easy-to-use controls to create the perfect focus environment. Just pick your favorite sound, adjust the volume, and get to work!
 
-## React Compiler
+**Perfect for:**
+- Students studying for exams
+- People working from home
+- Anyone who needs help staying focused
+- Those looking to relax during breaks
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features ✨
 
-## Expanding the ESLint configuration
+- 🎶 **Multiple Music Categories** - Choose from different types of background music to match your mood
+- 🔊 **Sound Effects Controls** - Add extra ambient sounds like rain, wind, or office noise
+- 🎚️ **Easy Volume Control** - Adjust music and sound effects to your preference
+- 📱 **Mobile Friendly** - Works smoothly on phones, tablets, and computers
+- 🎯 **Simple and Intuitive** - No complicated settings—just pick a sound and start focusing
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Technologies Used
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **React** - For building the user interface
+- **Tailwind CSS** - For styling and making it look great
+- **Material-UI** - For interactive components like sliders
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## How to Use
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. Open the app in your browser
+2. Click the music icon to browse different sound categories
+3. Select your favorite background music
+4. Use the SFX (Sound Effects) button to add extra ambient sounds
+5. Adjust the volume to your liking using the volume control
+6. Start studying or working!
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Future Ideas 🚀
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Save favorite sound combinations as presets
+- Timer feature to set focused study sessions
+- Different themes (dark mode, light mode, etc.)
+- More sound categories and effects
+- Ability to upload custom sounds
+- Focus statistics to track study sessions
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Getting Started
+
+Simply open the app in your web browser and start using it—no installation and account needed!
+
+---
