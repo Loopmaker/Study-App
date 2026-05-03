@@ -25,13 +25,13 @@ const VideoPlayer = ({ video }: Props) => {
   },[video])
 
   return (
-    <div className="fixed inset-0 ">
-      <video 
+    <div className="fixed inset-0 pointer-events-none">
+      <video
         ref={videoRef}
-        src={currentVideo || "" } 
-        autoPlay 
-        muted 
-        loop 
+        src={currentVideo || "" }
+        autoPlay
+        muted
+        loop
         className={`object-cover w-full h-full transition-opacity duration-200 ${fade ? "opacity-0" : "opacity-100"}`}/>
     </div>
   )

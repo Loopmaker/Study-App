@@ -42,10 +42,15 @@ function PlayerControls({
   const nextSong = () => {
     setSongIndex((prevIndex) => {
       const nextIndex = prevIndex < musicCategories[activeMusicCategory].music.length - 1 ? prevIndex + 1 : 0;
-      setIsPlaying(true);
       return nextIndex;
     });
+    setIsPlaying(true);
   }
+
+  useEffect(()=> {
+    if(!audioRef.current) return;
+    audioRef.current.volume = isMuted ? 0 : volume / 100;
+  }, [volume, isMuted])
 
    const prevSong = () => {
     setSongIndex((prevIndex) => prevIndex > 0 ? prevIndex - 1 : musicCategories[activeMusicCategory].music.length - 1)
@@ -79,7 +84,7 @@ function PlayerControls({
         volume={volume}
         isMuted={isMuted}
         onVolumeChange={setVolume}
-        onToggleMute={() => setIsMuted(!isMuted)}
+        onToggleMute={() => setIsMuted((prev) => !prev)}
       />
       <audio ref={audioRef} src={currentTrack?.src || ""} autoPlay/>
     </div>

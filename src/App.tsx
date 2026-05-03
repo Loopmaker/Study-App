@@ -7,6 +7,9 @@ import expand_icon from "./assets/icons/icon--expand.png"
 import type { Song } from "./types/types"
 import musicCategories from "./data/musicCategories"
 import PlayerControls from "./components/PlayerControls"
+import SelectorBtn from "./components/SelectorBtn"
+import MusicPanel from "./components/MusicPanel"
+import SfxControllPanel from "./components/SfxControllPanel"
 
 function App() {
   const [activeVideo, setActiveVideo] = useState<string | null>(
@@ -17,11 +20,13 @@ function App() {
   const [activeVideoCategory, setActiveVideoCategory] = useState<number>(0);
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
  
-  const [activeMusicCategory, setActiveCategory] = useState<number>(0);
+  const [activeMusicCategory, setActiveMusicCategory] = useState<number>(0);
   const [currentTrack, setCurrentTrack] = useState<Song | null>(
     musicCategories[activeMusicCategory].music[0],
   );
-  const [songIndex, setSongIndex] = useState<number>(0)
+  const [songIndex, setSongIndex] = useState<number>(0);
+  const [showMusicPanel, setShowMusicPanel] = useState<boolean>(false);
+  const [showSfxPanel, setShowSfxPanel] = useState<boolean>(false);
 
   const sceneControlVisibility = () => {
     setIsSceneControlVisible(!isSceneControlVisible)
@@ -80,6 +85,26 @@ function App() {
             alt="Arrow Down"/>
         </button>
       </div>
+
+      <SelectorBtn 
+        setShowMusicPanel={setShowMusicPanel}
+        showMusicPanel={showMusicPanel}
+        setShowSfxPanel={setShowSfxPanel}
+        showSfxPanel={showSfxPanel}
+      />
+      <MusicPanel
+        showMusicPanel={showMusicPanel}
+        activeMusicCategory={activeMusicCategory}
+        setActiveMusicCategory={setActiveMusicCategory}
+        songIndex={songIndex}
+        setSongIndex={setSongIndex}
+        setShowMusicPanel={setShowMusicPanel}
+      />
+      <SfxControllPanel
+        showSfxPanel={showSfxPanel}
+        setShowSfxPanel={setShowSfxPanel}
+      />
+
       <VideoPlayer video={activeVideo}/>
       <footer className="absolute w-full grid md:grid-cols-3 grid-cols-1 bottom-0 sm:bottom-6 left-1/2 transform -translate-x-1/2 z-50">
           <div className="self-center w-full md:w-fit order-1 md:order-0">
