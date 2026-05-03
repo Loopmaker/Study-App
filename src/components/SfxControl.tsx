@@ -36,7 +36,7 @@ function SfxControl( {sfx}: Props) {
                 },
               },
         }}
-        onChange={(e, newValue) => {
+        onChange={(_, newValue) => {
           setVolume(newValue as number)
           if(audioRef.current){
             audioRef.current.muted = false;
