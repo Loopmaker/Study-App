@@ -45,6 +45,10 @@ Drowse is designed to help you concentrate while studying or working. Whether yo
 - Ability to upload custom sounds
 - Focus statistics to track study sessions
 
+## Status
+
+- Currently fixing performance both mobile and pc
+
 ## Getting Started
 
 Simply open the app in your web browser and start using it—no installation and account needed!
