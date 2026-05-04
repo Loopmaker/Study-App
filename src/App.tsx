@@ -13,7 +13,7 @@ import SfxControllPanel from "./components/SfxControllPanel"
 
 function App() {
   const [activeVideo, setActiveVideo] = useState<string | null>(
-    videoCategoryData[0].videos[0]
+    videoCategoryData[0].videos[0].src
   );
   const fullscreenRef = useRef<HTMLElement>(null)
   const [isSceneControlVisible, setIsSceneControlVisible] = useState<boolean>(false);
@@ -59,7 +59,7 @@ function App() {
         <div className="flex items-center justify-center self-center border border-white/20 gap-6 bg-black/70 py-2 px-6 rounded-full shadow-md">
           {videoCategoryData.map((category, index: number) => {
             return <button key={category.id} className={`relative ${activeVideoCategory === index ? "opacity-100" : "opacity-50"}`} onClick={() => {
-              setActiveVideo(category.videos[0]);
+              setActiveVideo(category.videos[0].src);
               setActiveVideoCategory(index);
             }}>
               <img src={category.icon} alt={category.category} className="w-9 invert"/>
@@ -71,11 +71,24 @@ function App() {
         </div>
 
         <div className="p-2 flex gap-2 flex-wrap justify-center bg-black/40 border border-white/20 rounded-lg shadow-sm">
-          {videoCategoryData[activeVideoCategory].videos.map((video) => {
-            return <button key={video} className="aspect-video" onClick={()=> {setActiveVideo(video)}}>
-              <video src={video} className={`aspect-video w-30 rounded-md ${activeVideo === video? "ring-2 ring-emerald-400 opacity-100" : "opacity-90"}`} preload="metadata" disablePictureInPicture/>
-            </button>
-          })}
+         {videoCategoryData[activeVideoCategory].videos.map((video) => {
+              return (
+                <button
+                  key={video.src}
+                  className="aspect-video"
+                  onClick={() => setActiveVideo(video.src)}
+                >
+                  <img
+                    src={video.thumbnail}
+                    className={`aspect-video w-30 rounded-md ${
+                      activeVideo === video.src
+                        ? "ring-2 ring-emerald-400 opacity-100"
+                        : "opacity-90"
+                    }`}
+                  />
+                </button>
+              );
+            })}
         </div>
 
         <button className="mt-4 flex items-center justify-center self-center w-fit rounded-full p-2" onClick={sceneControlVisibility}>

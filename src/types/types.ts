@@ -5,10 +5,15 @@ type Song = {
   src: string
 }
 
+type VideoItem = {
+  src: string
+  thumbnail: string
+}
+
 type VideoCategory = {
   id: string
   category: string
-  videos: string[]
+  videos: VideoItem[]
   icon: string
 }
 
@@ -25,4 +30,4 @@ type MusicCategory = {
   cover: string
 }
 
-export type{ Song, VideoCategory, SoundEffects, MusicCategory}
+export type{ Song, VideoCategory, VideoItem,SoundEffects, MusicCategory}
