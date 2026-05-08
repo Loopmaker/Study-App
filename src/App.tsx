@@ -15,6 +15,12 @@ function App() {
   const [activeVideo, setActiveVideo] = useState<string | null>(
     videoCategoryData[0].videos[0].src
   );
+  const getNextVideo = (): string | null => {
+  const categoryVideos = videoCategoryData[activeVideoCategory].videos
+  const currentIndex = categoryVideos.findIndex(v => v.src === activeVideo)
+  const nextIndex = (currentIndex + 1) % categoryVideos.length
+  return categoryVideos[nextIndex].src
+}
   const fullscreenRef = useRef<HTMLElement>(null)
   const [isSceneControlVisible, setIsSceneControlVisible] = useState<boolean>(false);
   const [activeVideoCategory, setActiveVideoCategory] = useState<number>(0);
@@ -118,7 +124,7 @@ function App() {
         setShowSfxPanel={setShowSfxPanel}
       />
 
-      <VideoPlayer video={activeVideo}/>
+      <VideoPlayer video={activeVideo} nextVideo={getNextVideo()} />
       <footer className="absolute w-full grid md:grid-cols-3 grid-cols-1 bottom-0 sm:bottom-6 left-1/2 transform -translate-x-1/2 z-50">
           <div className="self-center w-full md:w-fit order-1 md:order-0">
             {currentTrack && (
