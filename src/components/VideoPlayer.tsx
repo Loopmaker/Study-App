@@ -15,7 +15,7 @@ const VideoPlayer = ({ video, nextVideo }: Props) => {
   useEffect(() => {
     if (video && videoA.current) {
       videoA.current.src = video
-      videoA.current.play()
+      videoA.current.play().catch(() => {})
     }
   }, [])
 
@@ -26,16 +26,22 @@ const VideoPlayer = ({ video, nextVideo }: Props) => {
     const incoming = activeLayer === "a" ? videoB.current : videoA.current
     if (!incoming) return
 
+    incoming.pause()
     incoming.src = video
     incoming.load()
+    let cancelled = false
 
     const onReady = () => {
-      incoming.play()
+      if (cancelled) return
+      incoming.play().catch(() => {})
       setActiveLayer(prev => prev === "a" ? "b" : "a")
     }
-
+    
     incoming.addEventListener("canplay", onReady, { once: true })
-    return () => incoming.removeEventListener("canplay", onReady)
+    return () => {
+      cancelled = true
+      incoming.removeEventListener("canplay", onReady)
+    }
   }, [video])
 
   // Silently preload next video
