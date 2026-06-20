@@ -4,10 +4,11 @@ import videoCategoryData from "./data/videoCategoryData"
 import arrowDown from "./assets/icons/icon--arrow-down.png"
 import shrink_icon from "./assets/icons/icon--shrink.png"
 import expand_icon from "./assets/icons/icon--expand.png"
+import musicIcon from "./assets/icons/icon--music.png"
+import slidersIcon from "./assets/icons/icon--sliders.png"
 import type { Song } from "./types/types"
 import musicCategories from "./data/musicCategories"
 import PlayerControls from "./components/PlayerControls"
-import SelectorBtn from "./components/SelectorBtn"
 import MusicPanel from "./components/MusicPanel"
 import SfxControllPanel from "./components/SfxControllPanel"
 
@@ -55,20 +56,26 @@ function App() {
 
   return (
     <main className="relative h-screen bg-black overflow-hidden" ref={fullscreenRef}>
-      
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-10 h-32 bg-linear-to-b from-black/55 to-transparent" />
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-10 h-44 bg-linear-to-t from-black/75 via-black/35 to-transparent" />
       <button className="absolute top-4 sm:top-8 right-4 sm:right-8 z-50 flex items-center justify-center h-10 sm:h-12 aspect-46/48 bg-black/40 backdrop-blur-sm border border-white/20 rounded-md hover:scale-105 transition-transform ease-in-out duration-200" onClick={toogleFullscreen}>
       <img src={isFullScreen ? shrink_icon : expand_icon} alt="Fullscreen Toogle" className="invert h-[70%]"/>
       </button>
 
       <div className={`absolute top-4 left-1/2 w-fit max-w-130 min-w-67.5 flex flex-col gap-2 translate-x-[-50%] z-50 transition-all ease-in duration-300 ${isSceneControlVisible ? "translate-y-0" : "translate-y-[-80%]"}`}>
 
-        <div className="flex items-center justify-center self-center border border-white/20 gap-6 bg-black/70 py-2 px-6 rounded-full shadow-md">
+        <div className="flex items-center justify-center self-center gap-2 rounded-full border border-white/15 bg-black/55 px-3 py-2 shadow-lg backdrop-blur-md">
           {videoCategoryData.map((category, index: number) => {
-            return <button key={category.id} className={`relative ${activeVideoCategory === index ? "opacity-100" : "opacity-50"}`} onClick={() => {
+            return <button key={category.id} className={`relative grid h-10 w-10 place-items-center rounded-full transition ${
+            activeVideoCategory === index
+              ? "bg-white/15 opacity-100"
+              : "opacity-55 hover:bg-white/10 hover:opacity-90"
+              }`} 
+            onClick={() => {
               setActiveVideo(category.videos[0].src);
               setActiveVideoCategory(index);
             }}>
-              <img src={category.icon} alt={category.category} className="w-9 invert"/>
+              <img src={category.icon} alt={category.category} className="h-6 w-6 invert"/>
               {activeVideoCategory === index && (
                 <div className="absolute w-1 h-1 bg-emerald-400 rounded-full left-1/2 -translate-x-1/2 -bottom-1"></div>
               )}
@@ -105,12 +112,6 @@ function App() {
         </button>
       </div>
 
-      <SelectorBtn 
-        setShowMusicPanel={setShowMusicPanel}
-        showMusicPanel={showMusicPanel}
-        setShowSfxPanel={setShowSfxPanel}
-        showSfxPanel={showSfxPanel}
-      />
       <MusicPanel
         showMusicPanel={showMusicPanel}
         activeMusicCategory={activeMusicCategory}
@@ -125,34 +126,62 @@ function App() {
       />
 
       <VideoPlayer video={activeVideo} nextVideo={getNextVideo()} />
-      <footer className="absolute w-full grid md:grid-cols-3 grid-cols-1 bottom-0 sm:bottom-6 left-1/2 transform -translate-x-1/2 z-50">
-          <div className="self-center w-full md:w-fit order-1 md:order-0">
-            {currentTrack && (
-              <p className="mt-2 px-4 py-2 bg-black/40 text-white/90 flex items-center justify-center gap-2 md:rounded-r-lg">
-                <span className="hidden lg:block">Now Playing:</span>
-                <span className="text-sm sm:text-base font-semibold text-white">
-                  {currentTrack.title}
-                </span>
+      <footer className="fixed inset-x-3 bottom-3 z-50 sm:inset-x-6 sm:bottom-6">
+        <div className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-3 rounded-2xl border border-white/15 bg-black/55 p-3 text-white shadow-2xl backdrop-blur-md md:grid-cols-[1fr_auto_1fr] md:gap-5 md:px-5">
+          <div className="min-w-0 text-center md:text-left">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/45">
+              Now playing
+            </p>
+
+            {currentTrack ? (
+              <p className="truncate text-sm font-semibold text-white sm:text-base">
+                {currentTrack.title}
               </p>
+            ) : (
+              <p className="text-sm text-white/60">Choose a track</p>
             )}
           </div>
+
           <PlayerControls
             activeMusicCategory={activeMusicCategory}
-            currentTrack = {currentTrack}
-            songIndex = {songIndex}
-            setSongIndex = {setSongIndex}
-            setCurrentTrack = {setCurrentTrack}
+            currentTrack={currentTrack}
+            songIndex={songIndex}
+            setSongIndex={setSongIndex}
+            setCurrentTrack={setCurrentTrack}
           />
-          <div className="hidden md:block mt-2 pr-8 text-right self-center">
-            <a 
-              href="https://loopmaker.netlify.app/"
-              className="font-bold text-emerald-400"
-              target="_blank"
-              rel="noopener noreferrer"
+
+          <div className="flex items-center justify-center gap-2 md:justify-end">
+            <button
+              className={`grid h-11 w-11 place-items-center rounded-full border transition ${
+                showMusicPanel
+                  ? "border-emerald-300/70 bg-emerald-300/20"
+                  : "border-white/15 bg-white/10 hover:bg-white/15"
+              }`}
+              onClick={() => {
+                setShowMusicPanel(!showMusicPanel)
+                setShowSfxPanel(false)
+              }}
+              aria-label="Open music panel"
             >
-              @Loopmaker
-            </a>
+              <img src={musicIcon} alt="" className="h-6 w-6 invert" />
+            </button>
+
+            <button
+              className={`grid h-11 w-11 place-items-center rounded-full border transition ${
+                showSfxPanel
+                  ? "border-emerald-300/70 bg-emerald-300/20"
+                  : "border-white/15 bg-white/10 hover:bg-white/15"
+              }`}
+              onClick={() => {
+                setShowSfxPanel(!showSfxPanel)
+                setShowMusicPanel(false)
+              }}
+              aria-label="Open ambience mixer"
+            >
+              <img src={slidersIcon} alt="" className="h-6 w-6 invert" />
+            </button>
           </div>
+        </div>
       </footer>
     </main>
   )

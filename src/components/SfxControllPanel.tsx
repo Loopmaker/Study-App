@@ -12,7 +12,11 @@ function SfxControllPanel({showSfxPanel, setShowSfxPanel}: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
   useClickOutside(panelRef, setShowSfxPanel, showSfxPanel);
   return (
-    <div ref={panelRef} className={`custom-scrollbar w-75 sm:w-107.5 h-130 bg-black/40 absolute z-50 top-1/2 right-18 sm:right-24 transform -translate-y-1/2 transition-all duration-300 rounded-lg border border-white/40 shadow-sm overflow-hidden ${showSfxPanel ? "translate-x-0" : "translate-x-[135%]"}`}>
+    <div ref={panelRef} className={`custom-scrollbar fixed inset-x-3 bottom-24 z-50 max-h-[68vh] overflow-auto rounded-2xl border border-white/15 bg-black/70 shadow-2xl backdrop-blur-md transition-all duration-300 sm:inset-x-auto sm:right-6 sm:bottom-28 sm:w-107.5 ${
+      showSfxPanel
+        ? "translate-y-0 opacity-100"
+        : "translate-y-6 opacity-0 pointer-events-none"
+    }`}>
       <div className="p-3">
         <h2 className="text-xl sm:text-2xl font-semibold text-white">
           SFX Controls

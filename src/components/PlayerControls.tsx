@@ -68,26 +68,44 @@ function PlayerControls({
     }
   }, [activeMusicCategory]);
   return (
-    <div className="flex items-center justify-center gap-4 sm:gap-8 flex-wrap">
-      <button className="rotate-180 w-10 sm:w-11.5 hover:scale-105 transition-transform ease-in-out duration-200" onClick={prevSong}>
-        <img src={prev} className="invert" alt="Previous"/>
+    <div className="flex items-center justify-center gap-3 sm:gap-4">
+      <button
+        className="grid h-10 w-10 place-items-center rounded-full bg-white/10 transition hover:bg-white/15 active:scale-95 sm:h-11 sm:w-11"
+        onClick={prevSong}
+        aria-label="Previous track"
+      >
+        <img src={prev} className="h-5 w-5 rotate-180 invert sm:h-6 sm:w-6" alt="" />
       </button>
 
-      <button className="w-12 sm:w-15 hover:scale-105 transition-transform ease-in-out duration-200" onClick={() => setIsPlaying(!isPlaying)}>
-        <img src={isPlaying ? pause : play} className="invert" alt={isPlaying ? "Pause" : "Play"}/>
+      <button
+        className="grid h-14 w-14 place-items-center rounded-full bg-white text-black shadow-lg transition hover:scale-105 active:scale-95 sm:h-16 sm:w-16"
+        onClick={() => setIsPlaying(!isPlaying)}
+        aria-label={isPlaying ? "Pause" : "Play"}
+      >
+        <img
+          src={isPlaying ? pause : play}
+          className="h-7 w-7"
+          alt=""
+        />
       </button>
 
-      <button className="w-10 sm:w-11.5 hover:scale-105 transition-transform ease-in-out duration-200" onClick={nextSong}>
-        <img src={next} className="invert" alt="Previous"/>
+      <button
+        className="grid h-10 w-10 place-items-center rounded-full bg-white/10 transition hover:bg-white/15 active:scale-95 sm:h-11 sm:w-11"
+        onClick={nextSong}
+        aria-label="Next track"
+      >
+        <img src={next} className="h-5 w-5 invert sm:h-6 sm:w-6" alt="" />
       </button>
-      <VolumeControl 
+
+      <VolumeControl
         volume={volume}
         isMuted={isMuted}
         onVolumeChange={setVolume}
         onToggleMute={() => setIsMuted((prev) => !prev)}
       />
-      <audio ref={audioRef} src={currentTrack?.src || ""} autoPlay/>
+
+      <audio ref={audioRef} src={currentTrack?.src || ""} autoPlay />
     </div>
-  );
+  )
 }
 export default PlayerControls
