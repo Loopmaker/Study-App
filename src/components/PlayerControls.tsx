@@ -13,6 +13,12 @@ interface Props {
   songIndex: number
   setSongIndex: React.Dispatch<React.SetStateAction<number>>
   setCurrentTrack: React.Dispatch<React.SetStateAction<Song | null>>
+  isPlaying: boolean
+  setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>
+  isLoading: boolean
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  hasError: boolean
+  setHasError: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 function PlayerControls({
@@ -20,18 +26,25 @@ function PlayerControls({
   currentTrack,
   songIndex,
   setSongIndex,
-  setCurrentTrack
+  setCurrentTrack,
+  isPlaying,
+  setIsPlaying,
+  isLoading,
+  setIsLoading,
+  hasError,
+  setHasError
 }: Props){
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(20);
   const [isMuted, setIsMuted] = useState<boolean>(false);
 
   useEffect(() => {
-    if(isPlaying){
-      audioRef.current?.play();
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (isPlaying) {
+      audio.play().catch(() => setIsPlaying(false));
     } else {
-      audioRef.current?.pause();
+      audio.pause();
     }
   }, [isPlaying, currentTrack]);
 
@@ -56,7 +69,7 @@ function PlayerControls({
     setSongIndex((prevIndex) => prevIndex > 0 ? prevIndex - 1 : musicCategories[activeMusicCategory].music.length - 1)
   }
 
-   useEffect(() => {
+  useEffect(() => {
     const audio = audioRef.current;
     if(!audio) return;
     const handleEnded = () => {
@@ -67,6 +80,29 @@ function PlayerControls({
       audio.removeEventListener("ended", handleEnded);
     }
   }, [activeMusicCategory]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const onLoadStart = () => { setIsLoading(true); setHasError(false); };
+    const onWaiting = () => setIsLoading(true);
+    const onCanPlay = () => setIsLoading(false);
+    const onPlaying = () => { setIsLoading(false); setHasError(false); };
+    const onError = () => { setIsLoading(false); setHasError(true); setIsPlaying(false); };
+
+    audio.addEventListener("loadstart", onLoadStart);
+    audio.addEventListener("waiting", onWaiting);
+    audio.addEventListener("canplay", onCanPlay);
+    audio.addEventListener("playing", onPlaying);
+    audio.addEventListener("error", onError);
+    return () => {
+      audio.removeEventListener("loadstart", onLoadStart);
+      audio.removeEventListener("waiting", onWaiting);
+      audio.removeEventListener("canplay", onCanPlay);
+      audio.removeEventListener("playing", onPlaying);
+      audio.removeEventListener("error", onError);
+    };
+  }, []);
   return (
     <div className="flex items-center justify-center gap-3 sm:gap-4">
       <button
@@ -78,15 +114,17 @@ function PlayerControls({
       </button>
 
       <button
-        className="grid h-14 w-14 place-items-center rounded-full bg-white text-black shadow-lg transition hover:scale-105 active:scale-95 sm:h-16 sm:w-16"
+        className="grid h-14 w-14 place-items-center rounded-full bg-white text-black shadow-lg transition hover:scale-105 active:scale-95 disabled:opacity-60 disabled:hover:scale-100 sm:h-16 sm:w-16"
         onClick={() => setIsPlaying(!isPlaying)}
+        disabled={isLoading || hasError}
+        aria-busy={isLoading}
         aria-label={isPlaying ? "Pause" : "Play"}
       >
-        <img
-          src={isPlaying ? pause : play}
-          className="h-7 w-7"
-          alt=""
-        />
+        {isLoading ? (
+          <span className="h-6 w-6 animate-spin rounded-full border-2 border-black/30 border-t-black" />
+        ) : (
+          <img src={isPlaying ? pause : play} className="h-7 w-7" alt="" />
+        )}
       </button>
 
       <button
@@ -104,7 +142,7 @@ function PlayerControls({
         onToggleMute={() => setIsMuted((prev) => !prev)}
       />
 
-      <audio ref={audioRef} src={currentTrack?.src || ""} autoPlay />
+      <audio ref={audioRef} src={currentTrack?.src || ""} />
     </div>
   )
 }

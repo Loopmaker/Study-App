@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Slider } from "@mui/material";
-import { getAudioContext } from "../hooks/useAudioContext";
+import { getAudioContext, getMasterSfxGain } from "../hooks/useAudioContext";
 import type { SoundEffects } from "../types/types";
+import volume_icon from "../assets/icons/icon--volume.png";
+import mute_icon from "../assets/icons/icon--mute.png";
 
 interface Props {
   sfx: SoundEffects;
@@ -13,6 +15,8 @@ function SfxControl({ sfx }: Props) {
   const gainRef = useRef<GainNode | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const isSetupRef = useRef<boolean>(false);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const setupAudio = () => {
     if (isSetupRef.current) return;
@@ -22,40 +26,50 @@ function SfxControl({ sfx }: Props) {
     const audio = new Audio(sfx.src);
     audio.loop = true;
     audioRef.current = audio;
+    audio.addEventListener("loadstart", () => setIsLoading(true));
+    audio.addEventListener("waiting", () => setIsLoading(true));
+    audio.addEventListener("canplaythrough", () => setIsLoading(false));
+    audio.addEventListener("playing", () => setIsLoading(false));
 
     const source = ctx.createMediaElementSource(audio);
     const gain = ctx.createGain();
     gain.gain.value = 0;
 
     source.connect(gain);
-    gain.connect(ctx.destination);
+    gain.connect(getMasterSfxGain());
 
     sourceRef.current = source;
     gainRef.current = gain;
   };
 
-  const handleChange = (_: Event, newValue: number | number[]) => {
-    const val = newValue as number;
-    setVolume(val);
-
-    // Lazy init audio on first interaction (required by mobile browsers)
-    setupAudio();
-
-    const ctx = getAudioContext();
-    if (ctx.state === "suspended") ctx.resume();
-
-    if (gainRef.current) {
-      gainRef.current.gain.value = val / 100;
-    }
-
-    if (audioRef.current) {
-      if (val > 0) {
-        audioRef.current.play().catch(console.error);
-      } else {
-        audioRef.current.pause();
-      }
-    }
+  const ensureAudio = () => {
+  setupAudio();
+  const ctx = getAudioContext();
+  if (ctx.state === "suspended") ctx.resume();
   };
+
+  const handleChange = (_: Event, newValue: number | number[]) => {
+  ensureAudio();
+  const val = newValue as number;
+  if (val > 0 && isMuted) setIsMuted(false);
+  setVolume(val);
+  };
+
+  const toggleMute = () => {
+  ensureAudio();
+  setIsMuted((prev) => !prev);
+  };
+
+  useEffect(() => {
+  if (!gainRef.current || !audioRef.current) return;
+  const effective = isMuted ? 0 : volume / 100;
+  gainRef.current.gain.value = effective;
+  if (effective > 0) {
+    audioRef.current.play().catch(() => {});
+  } else {
+    audioRef.current.pause();
+  }
+}, [volume, isMuted]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -66,11 +80,44 @@ function SfxControl({ sfx }: Props) {
     };
   }, []);
 
-  return (
-    <div className="grid grid-cols-[120px_1fr] sm:grid-cols-[150px_1fr] items-center">
-      <h3 className="text-base sm:text-lg text-gray-200">{sfx.name}</h3>
+const isActive = volume > 0 && !isMuted;
+
+return (
+    <div className="grid grid-cols-[110px_auto_1fr] sm:grid-cols-[140px_auto_1fr] items-center gap-2 sm:gap-3">
+      <div className="flex items-center gap-2 min-w-0">
+        <span
+          className={`h-1.5 w-1.5 shrink-0 rounded-full transition ${
+            isActive ? "bg-emerald-400" : "bg-white/20"
+          }`}
+        />
+        <h3
+          className={`truncate text-base sm:text-lg transition ${
+            isActive ? "text-white" : "text-gray-400"
+          }`}
+        >
+          {sfx.name}
+        </h3>
+      </div>
+
+      <button
+        onClick={toggleMute}
+        disabled={volume === 0}
+        aria-label={isMuted ? `Unmute ${sfx.name}` : `Mute ${sfx.name}`}
+        className="grid h-7 w-7 place-items-center rounded-full transition hover:bg-white/10 disabled:opacity-40"
+      >
+        {isLoading ? (
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+        ) : (
+          <img
+            src={isMuted || volume === 0 ? mute_icon : volume_icon}
+            alt=""
+            className="h-5 w-5 invert"
+          />
+        )}
+      </button>
+
       <Slider
-        value={volume}
+        value={isMuted ? 0 : volume}
         sx={{
           color: "#d6896d",
           height: 8,
