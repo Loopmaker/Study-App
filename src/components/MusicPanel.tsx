@@ -10,17 +10,20 @@ interface Props {
   songIndex: number
   setSongIndex: (index: number) => void
   setShowMusicPanel: (show: boolean) => void
+  musicButtonRef?: React.RefObject<HTMLButtonElement | null>
 }
+
 function MusicPanel({
   showMusicPanel,
   activeMusicCategory,
   setActiveMusicCategory,
   setShowMusicPanel,
   songIndex,
-  setSongIndex
+  setSongIndex,
+  musicButtonRef 
 }: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
-  useClickOutside(panelRef, setShowMusicPanel, showMusicPanel);
+  useClickOutside(panelRef, setShowMusicPanel, showMusicPanel, musicButtonRef ? [musicButtonRef] : undefined);
   const { elementRef: swipeRef } = useSwipeToDismiss({ onDismiss: () => setShowMusicPanel(false) });
 
   return (

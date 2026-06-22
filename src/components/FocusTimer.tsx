@@ -7,6 +7,7 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 interface Props {
   showTimer: boolean;
   setShowTimer: (show: boolean) => void;
+  timerButtonRef?: React.RefObject<HTMLButtonElement | null>;
 }
 
 const PRESETS = [
@@ -20,9 +21,9 @@ function format(total: number): string {
   return `${m}:${s}`;
 }
 
-function FocusTimer({ showTimer, setShowTimer }: Props) {
+function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
-  useClickOutside(panelRef, setShowTimer, showTimer);
+  useClickOutside(panelRef, setShowTimer, showTimer, timerButtonRef ? [timerButtonRef] : undefined);
   
   const [preferredMinutes, setPreferredMinutes] = useLocalStorage<number>(
     "drowse.timerMinutes",
@@ -66,6 +67,10 @@ const [custom, setCustom] = useState<string>("");
           : "translate-y-6 opacity-0 pointer-events-none"
       }`}
     >
+      {/* Drag handle - visible only on mobile */}
+      <div className="flex justify-center pt-3 pb-1 sm:hidden">
+        <div className="w-12 h-1.5 bg-white/30 rounded-full" />
+      </div>
       <div className="p-4 text-white">
         <h2 className="text-xl sm:text-2xl font-semibold">Focus</h2>
 

@@ -7,16 +7,17 @@ import { setMasterSfxVolume } from "../hooks/useAudioContext"
 import { useLocalStorage } from "../hooks/useLocalStorage"
 import { useSwipeToDismiss } from "../hooks/useSwipeToDismiss"
 
-interface Props{
+interface Props {
   showSfxPanel: boolean
   setShowSfxPanel: (show: boolean) => void
   sfxVolumes: Record<string, number>
   onSfxVolumeChange: (id: string, value: number) => void
+  sfxButtonRef?: React.RefObject<HTMLButtonElement | null>;
 }
 
-function SfxControllPanel({showSfxPanel, setShowSfxPanel, sfxVolumes, onSfxVolumeChange}: Props) {
+function SfxControllPanel({showSfxPanel, setShowSfxPanel, sfxVolumes, onSfxVolumeChange, sfxButtonRef}: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
-  useClickOutside(panelRef, setShowSfxPanel, showSfxPanel);
+  useClickOutside(panelRef, setShowSfxPanel, showSfxPanel, sfxButtonRef ? [sfxButtonRef] : undefined);
   const { elementRef: swipeRef } = useSwipeToDismiss({ onDismiss: () => setShowSfxPanel(false) });
   const [masterVolume, setMasterVolume] = useLocalStorage<number>("drowse.masterAmbience", 100);
 

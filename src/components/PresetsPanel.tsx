@@ -9,6 +9,7 @@ interface Props {
   onSave: (name: string) => void;
   onLoad: (preset: Preset) => void;
   onDelete: (id: string) => void;
+  presetsButtonRef?: React.RefObject<HTMLButtonElement | null>;
 }
 
 function PresetsPanel({
@@ -18,9 +19,10 @@ function PresetsPanel({
   onSave,
   onLoad,
   onDelete,
+  presetsButtonRef
 }: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
-  useClickOutside(panelRef, setShowPresets, showPresets);
+  useClickOutside(panelRef, setShowPresets, showPresets, presetsButtonRef ? [presetsButtonRef] : undefined);
   const [name, setName] = useState<string>("");
 
   const handleSave = () => {
@@ -39,6 +41,10 @@ function PresetsPanel({
           : "translate-y-6 opacity-0 pointer-events-none"
       }`}
     >
+      {/* Drag handle - visible only on mobile */}
+      <div className="flex justify-center pt-3 pb-1 sm:hidden">
+        <div className="w-12 h-1.5 bg-white/30 rounded-full" />
+      </div>
       <div className="p-4 text-white">
         <h2 className="text-xl sm:text-2xl font-semibold">Presets</h2>
 

@@ -47,6 +47,11 @@ function App() {
   const [sfxVolumes, setSfxVolumes] = useLocalStorage<Record<string, number>>("drowse.sfxVolumes", {});
   const { presets, savePreset, deletePreset } = usePresets();
 
+  const musicButtonRef = useRef<HTMLButtonElement>(null);
+  const sfxButtonRef = useRef<HTMLButtonElement>(null);
+  const timerButtonRef = useRef<HTMLButtonElement>(null);
+  const presetsButtonRef = useRef<HTMLButtonElement>(null);
+
   const sceneControlVisibility = () => {
     setIsSceneControlVisible(!isSceneControlVisible)
   }
@@ -64,10 +69,8 @@ function App() {
     setSfxVolumes(preset.sfxVolumes);
     setIsPlaying(true);
   };
-  console.log("render", { showMusicPanel });
 
   const handleMusicPanelToggle = () => {
-     console.log("clicked", showMusicPanel);
   if (showMusicPanel) {
     setShowMusicPanel(false);
   } else {
@@ -190,15 +193,17 @@ const handlePresetsToggle = () => {
         songIndex={songIndex}
         setSongIndex={setSongIndex}
         setShowMusicPanel={setShowMusicPanel}
+        musicButtonRef={musicButtonRef}
       />
       <SfxControllPanel
         showSfxPanel={showSfxPanel}
         setShowSfxPanel={setShowSfxPanel}
         sfxVolumes={sfxVolumes}
         onSfxVolumeChange={setSfxVolume}
+        sfxButtonRef={sfxButtonRef}
       />
 
-      <FocusTimer showTimer={showTimer} setShowTimer={setShowTimer} />
+      <FocusTimer showTimer={showTimer} setShowTimer={setShowTimer} timerButtonRef={timerButtonRef} />
 
       <PresetsPanel
         showPresets={showPresets}
@@ -207,12 +212,13 @@ const handlePresetsToggle = () => {
         onSave={handleSavePreset}
         onLoad={handleLoadPreset}
         onDelete={deletePreset}
+        presetsButtonRef={presetsButtonRef}
       />
 
       <VideoPlayer video={activeVideo} nextVideo={getNextVideo()} />
 
       <footer className="fixed inset-x-0 bottom-0 z-50 sm:inset-x-6 sm:bottom-6">
-        <div className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-3 rounded-t-2xl sm:rounded-2xl border border-white/15 border-b-0 sm:border-b border-white/15 bg-black/55 p-3 text-white shadow-2xl backdrop-blur-md md:grid-cols-[1fr_auto_1fr] md:gap-5 md:px-5 md:rounded-2xl md:border-b">
+        <div className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-3 rounded-t-2xl sm:rounded-2xl border border-white/15 border-b-0 sm:border-b bg-black/55 p-3 text-white shadow-2xl backdrop-blur-md md:grid-cols-[1fr_auto_1fr] md:gap-5 md:px-5 md:rounded-2xl md:border-b">
           <div className="min-w-0 text-center md:text-left">  
             <p className="flex items-center justify-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/45 md:justify-start">
               {hasError ? (
@@ -261,6 +267,7 @@ const handlePresetsToggle = () => {
 
           <div className="flex items-center justify-center gap-2 md:justify-end">
             <button
+              ref={musicButtonRef}
               className={`grid h-12 w-12 place-items-center rounded-full border transition sm:h-11 sm:w-11 ${
                 showMusicPanel
                   ? "border-emerald-300/70 bg-emerald-300/20"
@@ -273,6 +280,7 @@ const handlePresetsToggle = () => {
             </button>
 
             <button
+              ref={sfxButtonRef}
               className={`grid h-12 w-12 place-items-center rounded-full border transition sm:h-11 sm:w-11 ${
                 showSfxPanel
                   ? "border-emerald-300/70 bg-emerald-300/20"
@@ -284,6 +292,7 @@ const handlePresetsToggle = () => {
               <img src={slidersIcon} alt="" className="h-6 w-6 invert" />
             </button>
             <button
+              ref={timerButtonRef}
               className={`grid h-12 w-12 place-items-center rounded-full border transition sm:h-11 sm:w-11 ${
                 showTimer
                   ? "border-emerald-300/70 bg-emerald-300/20"
@@ -299,6 +308,7 @@ const handlePresetsToggle = () => {
               </svg>
             </button>
             <button
+              ref={presetsButtonRef}
               className={`grid h-12 w-12 place-items-center rounded-full border transition sm:h-11 sm:w-11 ${
                 showPresets
                   ? "border-emerald-300/70 bg-emerald-300/20"
