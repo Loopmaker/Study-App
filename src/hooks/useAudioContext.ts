@@ -29,19 +29,21 @@ export function playChime(): void {
 }
 
 let masterSfxGain: GainNode | null = null;
+let masterSfxVolume = 1;
 
 export function getMasterSfxGain(): GainNode {
   const ctx = getAudioContext();
   if (!masterSfxGain) {
     masterSfxGain = ctx.createGain();
-    masterSfxGain.gain.value = 1;
+    masterSfxGain.gain.value = masterSfxVolume;
     masterSfxGain.connect(ctx.destination);
   }
   return masterSfxGain;
 }
 
 export function setMasterSfxVolume(value: number): void {
-  const ctx = getAudioContext();
-  if (ctx.state === "suspended") ctx.resume();
-  getMasterSfxGain().gain.value = value;
+  masterSfxVolume = value;
+  if (masterSfxGain) {
+    masterSfxGain.gain.value = value;
+  }
 }

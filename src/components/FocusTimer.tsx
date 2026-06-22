@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useTimer } from "../hooks/useTimer";
 import { playChime } from "../hooks/useAudioContext";
 import useClickOutside from "../hooks/useClickOutside";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 interface Props {
   showTimer: boolean;
@@ -22,17 +23,28 @@ function format(total: number): string {
 function FocusTimer({ showTimer, setShowTimer }: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
   useClickOutside(panelRef, setShowTimer, showTimer);
-
+  
+  const [preferredMinutes, setPreferredMinutes] = useLocalStorage<number>(
+    "drowse.timerMinutes",
+    25,
+  );
   const { duration, remaining, status, start, pause, reset, setMinutes } =
-    useTimer(25, playChime);
-  const [activePreset, setActivePreset] = useState<string>("pomodoro");
-  const [custom, setCustom] = useState<string>("");
+  useTimer(preferredMinutes, playChime);
+  const [activePreset, setActivePreset] = useState<string>(
+  preferredMinutes === 25
+    ? "pomodoro"
+    : preferredMinutes === 50
+      ? "deep"
+      : "custom",
+);
+const [custom, setCustom] = useState<string>("");
 
   const progress = duration > 0 ? ((duration - remaining) / duration) * 100 : 0;
   const isRunning = status === "running";
 
   const choosePreset = (id: string, minutes: number) => {
     setActivePreset(id);
+    setPreferredMinutes(minutes);
     setMinutes(minutes);
   };
 
@@ -40,6 +52,7 @@ function FocusTimer({ showTimer, setShowTimer }: Props) {
     const mins = parseInt(custom, 10);
     if (!Number.isNaN(mins) && mins > 0) {
       setActivePreset("custom");
+      setPreferredMinutes(mins);
       setMinutes(mins);
     }
   };

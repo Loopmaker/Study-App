@@ -3,9 +3,10 @@ import prev from "../assets/icons/icon--next.png"
 import play from "../assets/icons/icon--play.png"
 import pause from "../assets/icons/icon--pause.png"
 import next from "../assets/icons/icon--next.png"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import musicCategories from "../data/musicCategories"
 import VolumeControl from "./VolumeControl"
+import { useLocalStorage } from "../hooks/useLocalStorage"
 
 interface Props {
   activeMusicCategory: number
@@ -35,8 +36,8 @@ function PlayerControls({
   setHasError
 }: Props){
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [volume, setVolume] = useState<number>(20);
-  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [volume, setVolume] = useLocalStorage<number>("drowse.musicVolume", 20);
+  const [isMuted, setIsMuted] = useLocalStorage<boolean>("drowse.musicMuted", false);
 
   useEffect(() => {
     const audio = audioRef.current;

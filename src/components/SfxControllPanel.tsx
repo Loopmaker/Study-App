@@ -1,9 +1,10 @@
-import { useRef, useState } from "react"
+import { useRef, useEffect } from "react"
 import { Slider } from "@mui/material"
 import sfxData from "../data/sfxData"
 import SfxControl from "./SfxControl"
 import useClickOutside from "../hooks/useClickOutside"
 import { setMasterSfxVolume } from "../hooks/useAudioContext"
+import { useLocalStorage } from "../hooks/useLocalStorage"
 
 interface Props{
   showSfxPanel: boolean
@@ -15,12 +16,14 @@ interface Props{
 function SfxControllPanel({showSfxPanel, setShowSfxPanel, sfxVolumes, onSfxVolumeChange}: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
   useClickOutside(panelRef, setShowSfxPanel, showSfxPanel);
-  const [masterVolume, setMasterVolume] = useState<number>(100);
+  const [masterVolume, setMasterVolume] = useLocalStorage<number>("drowse.masterAmbience", 100);
+
+  useEffect(() => {
+    setMasterSfxVolume(masterVolume / 100);
+  }, [masterVolume]);
 
   const handleMasterChange = (_: Event, newValue: number | number[]) => {
-    const val = newValue as number;
-    setMasterVolume(val);
-    setMasterSfxVolume(val / 100);
+    setMasterVolume(newValue as number);
   };
   return (
     <div ref={panelRef} className={`custom-scrollbar fixed inset-x-3 bottom-24 z-50 max-h-[68vh] overflow-auto rounded-2xl border border-white/15 bg-black/70 shadow-2xl backdrop-blur-md transition-all duration-300 sm:inset-x-auto sm:right-6 sm:bottom-28 sm:w-107.5 ${

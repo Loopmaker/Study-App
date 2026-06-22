@@ -14,6 +14,7 @@ import SfxControllPanel from "./components/SfxControllPanel"
 import FocusTimer from "./components/FocusTimer"
 import PresetsPanel from "./components/PresetsPanel"
 import { usePresets, type Preset } from "./hooks/usePresets"
+import { useLocalStorage } from "./hooks/useLocalStorage"
 
 function App() {
   const [activeVideo, setActiveVideo] = useState<string | null>(
@@ -30,11 +31,11 @@ function App() {
   const [activeVideoCategory, setActiveVideoCategory] = useState<number>(0);
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
  
-  const [activeMusicCategory, setActiveMusicCategory] = useState<number>(0);
+  const [activeMusicCategory, setActiveMusicCategory] = useLocalStorage<number>("drowse.musicCategory", 0);
   const [currentTrack, setCurrentTrack] = useState<Song | null>(
     musicCategories[activeMusicCategory].music[0],
   );
-  const [songIndex, setSongIndex] = useState<number>(0);
+  const [songIndex, setSongIndex] = useLocalStorage<number>("drowse.songIndex", 0);
   const [showMusicPanel, setShowMusicPanel] = useState<boolean>(false);
   const [showSfxPanel, setShowSfxPanel] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -42,7 +43,7 @@ function App() {
   const [hasError, setHasError] = useState<boolean>(false);
   const [showTimer, setShowTimer] = useState<boolean>(false);
   const [showPresets, setShowPresets] = useState<boolean>(false);
-  const [sfxVolumes, setSfxVolumes] = useState<Record<string, number>>({});
+  const [sfxVolumes, setSfxVolumes] = useLocalStorage<Record<string, number>>("drowse.sfxVolumes", {});
   const { presets, savePreset, deletePreset } = usePresets();
 
   const sceneControlVisibility = () => {
