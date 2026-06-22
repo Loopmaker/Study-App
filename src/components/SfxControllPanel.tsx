@@ -5,6 +5,7 @@ import SfxControl from "./SfxControl"
 import useClickOutside from "../hooks/useClickOutside"
 import { setMasterSfxVolume } from "../hooks/useAudioContext"
 import { useLocalStorage } from "../hooks/useLocalStorage"
+import { useSwipeToDismiss } from "../hooks/useSwipeToDismiss"
 
 interface Props{
   showSfxPanel: boolean
@@ -16,6 +17,7 @@ interface Props{
 function SfxControllPanel({showSfxPanel, setShowSfxPanel, sfxVolumes, onSfxVolumeChange}: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
   useClickOutside(panelRef, setShowSfxPanel, showSfxPanel);
+  const { elementRef: swipeRef } = useSwipeToDismiss({ onDismiss: () => setShowSfxPanel(false) });
   const [masterVolume, setMasterVolume] = useLocalStorage<number>("drowse.masterAmbience", 100);
 
   useEffect(() => {
@@ -26,11 +28,14 @@ function SfxControllPanel({showSfxPanel, setShowSfxPanel, sfxVolumes, onSfxVolum
     setMasterVolume(newValue as number);
   };
   return (
-    <div ref={panelRef} className={`custom-scrollbar fixed inset-x-3 bottom-24 z-50 max-h-[68vh] overflow-auto rounded-2xl border border-white/15 bg-black/70 shadow-2xl backdrop-blur-md transition-all duration-300 sm:inset-x-auto sm:right-6 sm:bottom-28 sm:w-107.5 ${
+    <div ref={panelRef} {...swipeRef} className={`custom-scrollbar fixed inset-x-3 bottom-24 z-50 max-h-[68vh] overflow-auto rounded-2xl border border-white/15 bg-black/70 shadow-2xl backdrop-blur-md transition-all duration-300 sm:inset-x-auto sm:right-6 sm:bottom-28 sm:w-107.5 ${
       showSfxPanel
         ? "translate-y-0 opacity-100"
         : "translate-y-6 opacity-0 pointer-events-none"
     }`}>
+      <div className="flex justify-center pt-3 pb-1 sm:hidden">
+        <div className="w-12 h-1.5 bg-white/30 rounded-full" />
+      </div>
       <div className="p-3">
         <h2 className="text-xl sm:text-2xl font-semibold text-white">
           Ambience

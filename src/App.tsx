@@ -17,6 +17,7 @@ import { usePresets, type Preset } from "./hooks/usePresets"
 import { useLocalStorage } from "./hooks/useLocalStorage"
 
 function App() {
+  
   const [activeVideo, setActiveVideo] = useState<string | null>(
     videoCategoryData[0].videos[0].src
   );
@@ -63,7 +64,52 @@ function App() {
     setSfxVolumes(preset.sfxVolumes);
     setIsPlaying(true);
   };
+  console.log("render", { showMusicPanel });
 
+  const handleMusicPanelToggle = () => {
+     console.log("clicked", showMusicPanel);
+  if (showMusicPanel) {
+    setShowMusicPanel(false);
+  } else {
+    setShowMusicPanel(true);
+    setShowSfxPanel(false);
+    setShowTimer(false);
+    setShowPresets(false);
+  }
+};
+
+const handleSfxPanelToggle = () => {
+  if (showSfxPanel) {
+    setShowSfxPanel(false);
+  } else {
+    setShowSfxPanel(true);
+    setShowMusicPanel(false);
+    setShowTimer(false);
+    setShowPresets(false);
+  }
+};
+
+const handleTimerToggle = () => {
+  if (showTimer) {
+    setShowTimer(false);
+  } else {
+    setShowTimer(true);
+    setShowMusicPanel(false);
+    setShowSfxPanel(false);
+    setShowPresets(false);
+  }
+};
+
+const handlePresetsToggle = () => {
+  if (showPresets) {
+    setShowPresets(false);
+  } else {
+    setShowPresets(true);
+    setShowMusicPanel(false);
+    setShowSfxPanel(false);
+    setShowTimer(false);
+  }
+};
   const toogleFullscreen = () => {
     if(!fullscreenRef.current) return;
     if(isFullScreen){
@@ -164,13 +210,14 @@ function App() {
       />
 
       <VideoPlayer video={activeVideo} nextVideo={getNextVideo()} />
-      <footer className="fixed inset-x-3 bottom-3 z-50 sm:inset-x-6 sm:bottom-6">
-        <div className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-3 rounded-2xl border border-white/15 bg-black/55 p-3 text-white shadow-2xl backdrop-blur-md md:grid-cols-[1fr_auto_1fr] md:gap-5 md:px-5">
-            <div className="min-w-0 text-center md:text-left">
-              <p className="flex items-center justify-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/45 md:justify-start">
-                {hasError ? (
-                  <span className="text-red-300/80">Playback error</span>
-                ) : isLoading ? (
+
+      <footer className="fixed inset-x-0 bottom-0 z-50 sm:inset-x-6 sm:bottom-6">
+        <div className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-3 rounded-t-2xl sm:rounded-2xl border border-white/15 border-b-0 sm:border-b border-white/15 bg-black/55 p-3 text-white shadow-2xl backdrop-blur-md md:grid-cols-[1fr_auto_1fr] md:gap-5 md:px-5 md:rounded-2xl md:border-b">
+          <div className="min-w-0 text-center md:text-left">  
+            <p className="flex items-center justify-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/45 md:justify-start">
+              {hasError ? (
+                <span className="text-red-300/80">Playback error</span>
+              ) : isLoading ? (
                   <>
                     <span className="h-2.5 w-2.5 animate-spin rounded-full border border-white/30 border-t-white/80" />
                     Loading…
@@ -214,50 +261,35 @@ function App() {
 
           <div className="flex items-center justify-center gap-2 md:justify-end">
             <button
-              className={`grid h-11 w-11 place-items-center rounded-full border transition ${
+              className={`grid h-12 w-12 place-items-center rounded-full border transition sm:h-11 sm:w-11 ${
                 showMusicPanel
                   ? "border-emerald-300/70 bg-emerald-300/20"
                   : "border-white/15 bg-white/10 hover:bg-white/15"
               }`}
-              onClick={() => {
-                setShowMusicPanel(!showMusicPanel)
-                setShowSfxPanel(false)
-                setShowTimer(false)
-                setShowPresets(false)
-              }}
+              onClick={handleMusicPanelToggle}
               aria-label="Open music panel"
             >
               <img src={musicIcon} alt="" className="h-6 w-6 invert" />
             </button>
 
             <button
-              className={`grid h-11 w-11 place-items-center rounded-full border transition ${
+              className={`grid h-12 w-12 place-items-center rounded-full border transition sm:h-11 sm:w-11 ${
                 showSfxPanel
                   ? "border-emerald-300/70 bg-emerald-300/20"
                   : "border-white/15 bg-white/10 hover:bg-white/15"
               }`}
-              onClick={() => {
-                setShowSfxPanel(!showSfxPanel)
-                setShowMusicPanel(false)
-                setShowTimer(false)
-                setShowPresets(false)
-              }}
+              onClick={handleSfxPanelToggle}
               aria-label="Open ambience mixer"
             >
               <img src={slidersIcon} alt="" className="h-6 w-6 invert" />
             </button>
             <button
-              className={`grid h-11 w-11 place-items-center rounded-full border transition ${
+              className={`grid h-12 w-12 place-items-center rounded-full border transition sm:h-11 sm:w-11 ${
                 showTimer
                   ? "border-emerald-300/70 bg-emerald-300/20"
                   : "border-white/15 bg-white/10 hover:bg-white/15"
               }`}
-              onClick={() => {
-                setShowTimer(!showTimer)
-                setShowMusicPanel(false)
-                setShowSfxPanel(false)
-                setShowPresets(false)
-              }}
+              onClick={handleTimerToggle}
               aria-label="Open focus timer"
             >
               <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -267,17 +299,12 @@ function App() {
               </svg>
             </button>
             <button
-              className={`grid h-11 w-11 place-items-center rounded-full border transition ${
+              className={`grid h-12 w-12 place-items-center rounded-full border transition sm:h-11 sm:w-11 ${
                 showPresets
                   ? "border-emerald-300/70 bg-emerald-300/20"
                   : "border-white/15 bg-white/10 hover:bg-white/15"
               }`}
-              onClick={() => {
-                setShowPresets(!showPresets)
-                setShowMusicPanel(false)
-                setShowSfxPanel(false)
-                setShowTimer(false)
-              }}
+              onClick={handlePresetsToggle}
               aria-label="Open presets"
             >
               <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">

@@ -1,6 +1,7 @@
 import { useRef } from "react"
 import musicCategories from "../data/musicCategories"
 import useClickOutside from "../hooks/useClickOutside"
+import { useSwipeToDismiss } from "../hooks/useSwipeToDismiss"
 
 interface Props {
   showMusicPanel: boolean
@@ -19,15 +20,19 @@ function MusicPanel({
   setSongIndex
 }: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
-  useClickOutside(panelRef, setShowMusicPanel, showMusicPanel)
+  useClickOutside(panelRef, setShowMusicPanel, showMusicPanel);
+  const { elementRef: swipeRef } = useSwipeToDismiss({ onDismiss: () => setShowMusicPanel(false) });
 
   return (
-    <div ref={panelRef} className={`custom-scrollbar fixed inset-x-3 bottom-24 z-50 max-h-[68vh] overflow-auto rounded-2xl border border-white/15 bg-black/70 shadow-2xl backdrop-blur-md transition-all duration-300 sm:inset-x-auto sm:right-6 sm:bottom-28 sm:w-107.5 ${
+    <div ref={panelRef} {...swipeRef} className={`custom-scrollbar fixed inset-x-0 bottom-0 z-50 max-h-[75vh] overflow-auto rounded-t-3xl border border-white/15 border-b-0 bg-black/70 shadow-2xl backdrop-blur-md transition-all duration-300 sm:inset-x-auto sm:right-6 sm:bottom-28 sm:w-107.5 sm:rounded-2xl sm:border-b ${
       showMusicPanel
         ? "translate-y-0 opacity-100"
-        : "translate-y-6 opacity-0 pointer-events-none"
+        : "translate-y-full opacity-0 pointer-events-none"
     }`}>
-
+      {/* Drag handle - visible only on mobile */}
+      <div className="flex justify-center pt-3 pb-1 sm:hidden">
+        <div className="w-12 h-1.5 bg-white/30 rounded-full" />
+      </div>
       <div className="p-3 grid grid-cols-2 gap-2 overflow-y-auto text-white">
         {musicCategories.map((category, index: number) => {
           return <button key={category.id} className={`p-1 flex items-center gap-2 rounded-md ${activeMusicCategory === index ? "opacity-100 bg-white/15 ring-1 ring-white/30" : "opacity-80"}`} onClick={() => {setActiveMusicCategory(index); setSongIndex(0)}}>
