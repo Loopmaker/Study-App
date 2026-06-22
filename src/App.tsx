@@ -12,6 +12,8 @@ import PlayerControls from "./components/PlayerControls"
 import MusicPanel from "./components/MusicPanel"
 import SfxControllPanel from "./components/SfxControllPanel"
 import FocusTimer from "./components/FocusTimer"
+import PresetsPanel from "./components/PresetsPanel"
+import { usePresets, type Preset } from "./hooks/usePresets"
 
 function App() {
   const [activeVideo, setActiveVideo] = useState<string | null>(
@@ -39,10 +41,27 @@ function App() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
   const [showTimer, setShowTimer] = useState<boolean>(false);
+  const [showPresets, setShowPresets] = useState<boolean>(false);
+  const [sfxVolumes, setSfxVolumes] = useState<Record<string, number>>({});
+  const { presets, savePreset, deletePreset } = usePresets();
 
   const sceneControlVisibility = () => {
     setIsSceneControlVisible(!isSceneControlVisible)
   }
+  const setSfxVolume = (id: string, value: number) => {
+    setSfxVolumes((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleSavePreset = (name: string) => {
+    savePreset({ name, activeMusicCategory, songIndex, sfxVolumes });
+  };
+
+  const handleLoadPreset = (preset: Preset) => {
+    setActiveMusicCategory(preset.activeMusicCategory);
+    setSongIndex(preset.songIndex);
+    setSfxVolumes(preset.sfxVolumes);
+    setIsPlaying(true);
+  };
 
   const toogleFullscreen = () => {
     if(!fullscreenRef.current) return;
@@ -128,9 +147,20 @@ function App() {
       <SfxControllPanel
         showSfxPanel={showSfxPanel}
         setShowSfxPanel={setShowSfxPanel}
+        sfxVolumes={sfxVolumes}
+        onSfxVolumeChange={setSfxVolume}
       />
 
       <FocusTimer showTimer={showTimer} setShowTimer={setShowTimer} />
+
+      <PresetsPanel
+        showPresets={showPresets}
+        setShowPresets={setShowPresets}
+        presets={presets}
+        onSave={handleSavePreset}
+        onLoad={handleLoadPreset}
+        onDelete={deletePreset}
+      />
 
       <VideoPlayer video={activeVideo} nextVideo={getNextVideo()} />
       <footer className="fixed inset-x-3 bottom-3 z-50 sm:inset-x-6 sm:bottom-6">
@@ -192,6 +222,7 @@ function App() {
                 setShowMusicPanel(!showMusicPanel)
                 setShowSfxPanel(false)
                 setShowTimer(false)
+                setShowPresets(false)
               }}
               aria-label="Open music panel"
             >
@@ -208,6 +239,7 @@ function App() {
                 setShowSfxPanel(!showSfxPanel)
                 setShowMusicPanel(false)
                 setShowTimer(false)
+                setShowPresets(false)
               }}
               aria-label="Open ambience mixer"
             >
@@ -223,6 +255,7 @@ function App() {
                 setShowTimer(!showTimer)
                 setShowMusicPanel(false)
                 setShowSfxPanel(false)
+                setShowPresets(false)
               }}
               aria-label="Open focus timer"
             >
@@ -230,6 +263,24 @@ function App() {
                 <circle cx="12" cy="13" r="8" />
                 <path d="M12 9v4l2.5 2.5" />
                 <path d="M9 2h6" />
+              </svg>
+            </button>
+            <button
+              className={`grid h-11 w-11 place-items-center rounded-full border transition ${
+                showPresets
+                  ? "border-emerald-300/70 bg-emerald-300/20"
+                  : "border-white/15 bg-white/10 hover:bg-white/15"
+              }`}
+              onClick={() => {
+                setShowPresets(!showPresets)
+                setShowMusicPanel(false)
+                setShowSfxPanel(false)
+                setShowTimer(false)
+              }}
+              aria-label="Open presets"
+            >
+              <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" />
               </svg>
             </button>
           </div>

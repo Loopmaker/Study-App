@@ -8,9 +8,11 @@ import { setMasterSfxVolume } from "../hooks/useAudioContext"
 interface Props{
   showSfxPanel: boolean
   setShowSfxPanel: (show: boolean) => void
+  sfxVolumes: Record<string, number>
+  onSfxVolumeChange: (id: string, value: number) => void
 }
 
-function SfxControllPanel({showSfxPanel, setShowSfxPanel}: Props) {
+function SfxControllPanel({showSfxPanel, setShowSfxPanel, sfxVolumes, onSfxVolumeChange}: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
   useClickOutside(panelRef, setShowSfxPanel, showSfxPanel);
   const [masterVolume, setMasterVolume] = useState<number>(100);
@@ -53,7 +55,12 @@ function SfxControllPanel({showSfxPanel, setShowSfxPanel}: Props) {
         </div>
         <div className="my-2 sm:my-4 flex flex-col sm:gap-2">
           {sfxData.map((sfx) =>{
-            return <SfxControl key={sfx.id} sfx={sfx}/>
+            return <SfxControl
+              key={sfx.id}
+              sfx={sfx}
+              volume={sfxVolumes[sfx.id] ?? 0}
+              onVolumeChange={(value) => onSfxVolumeChange(sfx.id, value)}
+            />
           })}
         </div>
       </div>

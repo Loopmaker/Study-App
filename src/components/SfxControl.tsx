@@ -7,10 +7,11 @@ import mute_icon from "../assets/icons/icon--mute.png";
 
 interface Props {
   sfx: SoundEffects;
+  volume: number;
+  onVolumeChange: (value: number) => void;
 }
 
-function SfxControl({ sfx }: Props) {
-  const [volume, setVolume] = useState<number>(0);
+function SfxControl({ sfx, volume, onVolumeChange }: Props) {
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const gainRef = useRef<GainNode | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -43,33 +44,34 @@ function SfxControl({ sfx }: Props) {
   };
 
   const ensureAudio = () => {
-  setupAudio();
-  const ctx = getAudioContext();
-  if (ctx.state === "suspended") ctx.resume();
+    setupAudio();
+    const ctx = getAudioContext();
+    if (ctx.state === "suspended") ctx.resume();
   };
 
   const handleChange = (_: Event, newValue: number | number[]) => {
-  ensureAudio();
-  const val = newValue as number;
-  if (val > 0 && isMuted) setIsMuted(false);
-  setVolume(val);
+    ensureAudio();
+    const val = newValue as number;
+    if (val > 0 && isMuted) setIsMuted(false);
+    onVolumeChange(val);
   };
 
   const toggleMute = () => {
-  ensureAudio();
-  setIsMuted((prev) => !prev);
+    ensureAudio();
+    setIsMuted((prev) => !prev);
   };
 
-  useEffect(() => {
-  if (!gainRef.current || !audioRef.current) return;
-  const effective = isMuted ? 0 : volume / 100;
-  gainRef.current.gain.value = effective;
-  if (effective > 0) {
-    audioRef.current.play().catch(() => {});
-  } else {
-    audioRef.current.pause();
-  }
-}, [volume, isMuted]);
+    useEffect(() => {
+      const effective = isMuted ? 0 : volume / 100;
+      if (effective > 0) ensureAudio();
+      if (!gainRef.current || !audioRef.current) return;
+      gainRef.current.gain.value = effective;
+      if (effective > 0) {
+        audioRef.current.play().catch(() => {});
+      } else {
+        audioRef.current.pause();
+      }
+  }, [volume, isMuted]);
 
   // Cleanup on unmount
   useEffect(() => {
