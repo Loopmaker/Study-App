@@ -11,6 +11,7 @@ import musicCategories from "./data/musicCategories"
 import PlayerControls from "./components/PlayerControls"
 import MusicPanel from "./components/MusicPanel"
 import SfxControllPanel from "./components/SfxControllPanel"
+import FocusTimer from "./components/FocusTimer"
 
 function App() {
   const [activeVideo, setActiveVideo] = useState<string | null>(
@@ -37,6 +38,7 @@ function App() {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
+  const [showTimer, setShowTimer] = useState<boolean>(false);
 
   const sceneControlVisibility = () => {
     setIsSceneControlVisible(!isSceneControlVisible)
@@ -128,6 +130,8 @@ function App() {
         setShowSfxPanel={setShowSfxPanel}
       />
 
+      <FocusTimer showTimer={showTimer} setShowTimer={setShowTimer} />
+
       <VideoPlayer video={activeVideo} nextVideo={getNextVideo()} />
       <footer className="fixed inset-x-3 bottom-3 z-50 sm:inset-x-6 sm:bottom-6">
         <div className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-3 rounded-2xl border border-white/15 bg-black/55 p-3 text-white shadow-2xl backdrop-blur-md md:grid-cols-[1fr_auto_1fr] md:gap-5 md:px-5">
@@ -187,6 +191,7 @@ function App() {
               onClick={() => {
                 setShowMusicPanel(!showMusicPanel)
                 setShowSfxPanel(false)
+                setShowTimer(false)
               }}
               aria-label="Open music panel"
             >
@@ -202,10 +207,30 @@ function App() {
               onClick={() => {
                 setShowSfxPanel(!showSfxPanel)
                 setShowMusicPanel(false)
+                setShowTimer(false)
               }}
               aria-label="Open ambience mixer"
             >
               <img src={slidersIcon} alt="" className="h-6 w-6 invert" />
+            </button>
+            <button
+              className={`grid h-11 w-11 place-items-center rounded-full border transition ${
+                showTimer
+                  ? "border-emerald-300/70 bg-emerald-300/20"
+                  : "border-white/15 bg-white/10 hover:bg-white/15"
+              }`}
+              onClick={() => {
+                setShowTimer(!showTimer)
+                setShowMusicPanel(false)
+                setShowSfxPanel(false)
+              }}
+              aria-label="Open focus timer"
+            >
+              <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="13" r="8" />
+                <path d="M12 9v4l2.5 2.5" />
+                <path d="M9 2h6" />
+              </svg>
             </button>
           </div>
         </div>
