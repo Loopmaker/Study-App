@@ -27,16 +27,13 @@ function MusicPanel({
   const { elementRef: swipeRef } = useSwipeToDismiss({ onDismiss: () => setShowMusicPanel(false) });
 
   return (
-    <div ref={panelRef} {...swipeRef} className={`custom-scrollbar fixed inset-x-0 bottom-0 z-50 max-h-[75vh] overflow-auto rounded-t-3xl border border-white/15 border-b-0 bg-black/70 shadow-2xl backdrop-blur-md transition-all duration-300 sm:inset-x-auto sm:right-6 sm:bottom-28 sm:w-107.5 sm:rounded-2xl sm:border-b ${
+    <div ref={panelRef} {...swipeRef} className={`custom-scrollbar w-full sm:w-107.5 sm:absolute sm:bottom-full sm:right-0 sm:mb-2 sm:rounded-2xl overflow-auto rounded-t-2xl border border-b-0 sm:border-b border-white/15 bg-black/70 shadow-2xl backdrop-blur-md transition-all duration-300 ${
       showMusicPanel
-        ? "translate-y-0 opacity-100"
-        : "translate-y-full opacity-0 pointer-events-none"
+        ? "max-h-[60vh] opacity-100 sm:translate-y-0"
+        : "max-h-0 opacity-0 pointer-events-none sm:translate-y-2"
     }`}>
-      {/* Drag handle - visible only on mobile */}
-      <div className="flex justify-center pt-3 pb-1 sm:hidden">
-        <div className="w-12 h-1.5 bg-white/30 rounded-full" />
-      </div>
-      <div className="p-3 grid grid-cols-2 gap-2 overflow-y-auto text-white">
+
+      <div className="p-3 grid grid-cols-2 gap-2 overflow-y-auto text-white pb-6">
         {musicCategories.map((category, index: number) => {
           return <button key={category.id} className={`p-1 flex items-center gap-2 rounded-md ${activeMusicCategory === index ? "opacity-100 bg-white/15 ring-1 ring-white/30" : "opacity-80"}`} onClick={() => {setActiveMusicCategory(index); setSongIndex(0)}}>
             <img src={category.cover} alt={category.category} className="sm:w-17.5 w-11 h-11 rounded-md object-cover"/>

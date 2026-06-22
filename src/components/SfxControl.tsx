@@ -85,7 +85,7 @@ function SfxControl({ sfx, volume, onVolumeChange }: Props) {
 const isActive = volume > 0 && !isMuted;
 
 return (
-    <div className="grid grid-cols-[110px_auto_1fr] sm:grid-cols-[140px_auto_1fr] items-center gap-2 sm:gap-3">
+    <div className="grid grid-cols-[110px_auto_1fr] sm:grid-cols-[140px_auto_1fr] items-center gap-2 sm:gap-3 pr-2">
       <div className="flex items-center gap-2 min-w-0">
         <span
           className={`h-1.5 w-1.5 shrink-0 rounded-full transition ${

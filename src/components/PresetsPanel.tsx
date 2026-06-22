@@ -35,16 +35,13 @@ function PresetsPanel({
   return (
     <div
       ref={panelRef}
-      className={`custom-scrollbar fixed inset-x-3 bottom-24 z-50 max-h-[68vh] overflow-auto rounded-2xl border border-white/15 bg-black/70 shadow-2xl backdrop-blur-md transition-all duration-300 sm:inset-x-auto sm:right-6 sm:bottom-28 sm:w-107.5 ${
+      className={`w-full sm:w-80 sm:absolute sm:bottom-full sm:right-0 sm:mb-2 sm:rounded-2xl overflow-auto rounded-t-2xl border border-b-0 sm:border-b border-white/15 bg-black/70 shadow-2xl backdrop-blur-md transition-all duration-300 ${
         showPresets
-          ? "translate-y-0 opacity-100"
-          : "translate-y-6 opacity-0 pointer-events-none"
+          ? "max-h-[60vh] opacity-100 sm:translate-y-0"
+          : "max-h-0 opacity-0 pointer-events-none sm:translate-y-2"
       }`}
     >
-      {/* Drag handle - visible only on mobile */}
-      <div className="flex justify-center pt-3 pb-1 sm:hidden">
-        <div className="w-12 h-1.5 bg-white/30 rounded-full" />
-      </div>
+
       <div className="p-4 text-white">
         <h2 className="text-xl sm:text-2xl font-semibold">Presets</h2>
 

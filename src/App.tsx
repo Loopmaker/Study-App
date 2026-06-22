@@ -186,141 +186,143 @@ const handlePresetsToggle = () => {
         </button>
       </div>
 
-      <MusicPanel
-        showMusicPanel={showMusicPanel}
-        activeMusicCategory={activeMusicCategory}
-        setActiveMusicCategory={setActiveMusicCategory}
-        songIndex={songIndex}
-        setSongIndex={setSongIndex}
-        setShowMusicPanel={setShowMusicPanel}
-        musicButtonRef={musicButtonRef}
-      />
-      <SfxControllPanel
-        showSfxPanel={showSfxPanel}
-        setShowSfxPanel={setShowSfxPanel}
-        sfxVolumes={sfxVolumes}
-        onSfxVolumeChange={setSfxVolume}
-        sfxButtonRef={sfxButtonRef}
-      />
-
-      <FocusTimer showTimer={showTimer} setShowTimer={setShowTimer} timerButtonRef={timerButtonRef} />
-
-      <PresetsPanel
-        showPresets={showPresets}
-        setShowPresets={setShowPresets}
-        presets={presets}
-        onSave={handleSavePreset}
-        onLoad={handleLoadPreset}
-        onDelete={deletePreset}
-        presetsButtonRef={presetsButtonRef}
-      />
-
       <VideoPlayer video={activeVideo} nextVideo={getNextVideo()} />
 
       <footer className="fixed inset-x-0 bottom-0 z-50 sm:inset-x-6 sm:bottom-6">
-        <div className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-3 rounded-t-2xl sm:rounded-2xl border border-white/15 border-b-0 sm:border-b bg-black/55 p-3 text-white shadow-2xl backdrop-blur-md md:grid-cols-[1fr_auto_1fr] md:gap-5 md:px-5 md:rounded-2xl md:border-b">
-          <div className="min-w-0 text-center md:text-left">  
-            <p className="flex items-center justify-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/45 md:justify-start">
-              {hasError ? (
-                <span className="text-red-300/80">Playback error</span>
-              ) : isLoading ? (
-                  <>
-                    <span className="h-2.5 w-2.5 animate-spin rounded-full border border-white/30 border-t-white/80" />
-                    Loading…
-                  </>
-                ) : isPlaying ? (
-                  <>
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                    Now playing
-                  </>
+        <div className="relative mx-auto max-w-5xl">
+        <MusicPanel
+          showMusicPanel={showMusicPanel}
+          activeMusicCategory={activeMusicCategory}
+          setActiveMusicCategory={setActiveMusicCategory}
+          songIndex={songIndex}
+          setSongIndex={setSongIndex}
+          setShowMusicPanel={setShowMusicPanel}
+          musicButtonRef={musicButtonRef}
+        />
+
+        <SfxControllPanel
+          showSfxPanel={showSfxPanel}
+          setShowSfxPanel={setShowSfxPanel}
+          sfxVolumes={sfxVolumes}
+          onSfxVolumeChange={setSfxVolume}
+          sfxButtonRef={sfxButtonRef}
+        />
+        
+        <FocusTimer showTimer={showTimer} setShowTimer={setShowTimer} timerButtonRef={timerButtonRef} />
+
+        <PresetsPanel
+          showPresets={showPresets}
+          setShowPresets={setShowPresets}
+          presets={presets}
+          onSave={handleSavePreset}
+          onLoad={handleLoadPreset}
+          onDelete={deletePreset}
+          presetsButtonRef={presetsButtonRef}
+        />
+          <div className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-3 rounded-t-2xl sm:rounded-2xl border border-white/15 border-b-0 sm:border-b bg-black/55 p-3 text-white shadow-2xl backdrop-blur-md md:grid-cols-[1fr_auto_1fr] md:gap-5 md:px-5 md:rounded-2xl md:border-b">
+            <div className="min-w-0 text-center md:text-left">  
+              <p className="flex items-center justify-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/45 md:justify-start">
+                {hasError ? (
+                  <span className="text-red-300/80">Playback error</span>
+                ) : isLoading ? (
+                    <>
+                      <span className="h-2.5 w-2.5 animate-spin rounded-full border border-white/30 border-t-white/80" />
+                      Loading…
+                    </>
+                  ) : isPlaying ? (
+                    <>
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                      Now playing
+                    </>
+                  ) : (
+                    "Paused"
+                  )}
+                </p>
+
+                {hasError ? (
+                  <p className="truncate text-sm font-semibold text-red-300/90 sm:text-base">
+                    Couldn't load this track
+                  </p>
+                ) : currentTrack ? (
+                  <p className="truncate text-sm font-semibold text-white sm:text-base">
+                    {currentTrack.title}
+                  </p>
                 ) : (
-                  "Paused"
+                  <p className="text-sm text-white/60">Choose a track</p>
                 )}
-              </p>
+              </div>
 
-              {hasError ? (
-                <p className="truncate text-sm font-semibold text-red-300/90 sm:text-base">
-                  Couldn't load this track
-                </p>
-              ) : currentTrack ? (
-                <p className="truncate text-sm font-semibold text-white sm:text-base">
-                  {currentTrack.title}
-                </p>
-              ) : (
-                <p className="text-sm text-white/60">Choose a track</p>
-              )}
+            <PlayerControls
+              activeMusicCategory={activeMusicCategory}
+              currentTrack={currentTrack}
+              songIndex={songIndex}
+              setSongIndex={setSongIndex}
+              setCurrentTrack={setCurrentTrack}
+              isPlaying={isPlaying}
+              setIsPlaying={setIsPlaying}
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
+              hasError={hasError}
+              setHasError={setHasError}
+            />
+
+            <div className="flex items-center justify-center gap-2 md:justify-end">
+              <button
+                ref={musicButtonRef}
+                className={`grid h-12 w-12 place-items-center rounded-full border transition sm:h-11 sm:w-11 ${
+                  showMusicPanel
+                    ? "border-emerald-300/70 bg-emerald-300/20"
+                    : "border-white/15 bg-white/10 hover:bg-white/15"
+                }`}
+                onClick={handleMusicPanelToggle}
+                aria-label="Open music panel"
+              >
+                <img src={musicIcon} alt="" className="h-6 w-6 invert" />
+              </button>
+
+              <button
+                ref={sfxButtonRef}
+                className={`grid h-12 w-12 place-items-center rounded-full border transition sm:h-11 sm:w-11 ${
+                  showSfxPanel
+                    ? "border-emerald-300/70 bg-emerald-300/20"
+                    : "border-white/15 bg-white/10 hover:bg-white/15"
+                }`}
+                onClick={handleSfxPanelToggle}
+                aria-label="Open ambience mixer"
+              >
+                <img src={slidersIcon} alt="" className="h-6 w-6 invert" />
+              </button>
+              <button
+                ref={timerButtonRef}
+                className={`grid h-12 w-12 place-items-center rounded-full border transition sm:h-11 sm:w-11 ${
+                  showTimer
+                    ? "border-emerald-300/70 bg-emerald-300/20"
+                    : "border-white/15 bg-white/10 hover:bg-white/15"
+                }`}
+                onClick={handleTimerToggle}
+                aria-label="Open focus timer"
+              >
+                <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="13" r="8" />
+                  <path d="M12 9v4l2.5 2.5" />
+                  <path d="M9 2h6" />
+                </svg>
+              </button>
+              <button
+                ref={presetsButtonRef}
+                className={`grid h-12 w-12 place-items-center rounded-full border transition sm:h-11 sm:w-11 ${
+                  showPresets
+                    ? "border-emerald-300/70 bg-emerald-300/20"
+                    : "border-white/15 bg-white/10 hover:bg-white/15"
+                }`}
+                onClick={handlePresetsToggle}
+                aria-label="Open presets"
+              >
+                <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" />
+                </svg>
+              </button>
             </div>
-
-          <PlayerControls
-            activeMusicCategory={activeMusicCategory}
-            currentTrack={currentTrack}
-            songIndex={songIndex}
-            setSongIndex={setSongIndex}
-            setCurrentTrack={setCurrentTrack}
-            isPlaying={isPlaying}
-            setIsPlaying={setIsPlaying}
-            isLoading={isLoading}
-            setIsLoading={setIsLoading}
-            hasError={hasError}
-            setHasError={setHasError}
-          />
-
-          <div className="flex items-center justify-center gap-2 md:justify-end">
-            <button
-              ref={musicButtonRef}
-              className={`grid h-12 w-12 place-items-center rounded-full border transition sm:h-11 sm:w-11 ${
-                showMusicPanel
-                  ? "border-emerald-300/70 bg-emerald-300/20"
-                  : "border-white/15 bg-white/10 hover:bg-white/15"
-              }`}
-              onClick={handleMusicPanelToggle}
-              aria-label="Open music panel"
-            >
-              <img src={musicIcon} alt="" className="h-6 w-6 invert" />
-            </button>
-
-            <button
-              ref={sfxButtonRef}
-              className={`grid h-12 w-12 place-items-center rounded-full border transition sm:h-11 sm:w-11 ${
-                showSfxPanel
-                  ? "border-emerald-300/70 bg-emerald-300/20"
-                  : "border-white/15 bg-white/10 hover:bg-white/15"
-              }`}
-              onClick={handleSfxPanelToggle}
-              aria-label="Open ambience mixer"
-            >
-              <img src={slidersIcon} alt="" className="h-6 w-6 invert" />
-            </button>
-            <button
-              ref={timerButtonRef}
-              className={`grid h-12 w-12 place-items-center rounded-full border transition sm:h-11 sm:w-11 ${
-                showTimer
-                  ? "border-emerald-300/70 bg-emerald-300/20"
-                  : "border-white/15 bg-white/10 hover:bg-white/15"
-              }`}
-              onClick={handleTimerToggle}
-              aria-label="Open focus timer"
-            >
-              <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="13" r="8" />
-                <path d="M12 9v4l2.5 2.5" />
-                <path d="M9 2h6" />
-              </svg>
-            </button>
-            <button
-              ref={presetsButtonRef}
-              className={`grid h-12 w-12 place-items-center rounded-full border transition sm:h-11 sm:w-11 ${
-                showPresets
-                  ? "border-emerald-300/70 bg-emerald-300/20"
-                  : "border-white/15 bg-white/10 hover:bg-white/15"
-              }`}
-              onClick={handlePresetsToggle}
-              aria-label="Open presets"
-            >
-              <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" />
-              </svg>
-            </button>
           </div>
         </div>
       </footer>

@@ -29,20 +29,18 @@ function SfxControllPanel({showSfxPanel, setShowSfxPanel, sfxVolumes, onSfxVolum
     setMasterVolume(newValue as number);
   };
   return (
-    <div ref={panelRef} {...swipeRef} className={`custom-scrollbar fixed inset-x-3 bottom-24 z-50 max-h-[68vh] overflow-auto rounded-2xl border border-white/15 bg-black/70 shadow-2xl backdrop-blur-md transition-all duration-300 sm:inset-x-auto sm:right-6 sm:bottom-28 sm:w-107.5 ${
+    <div ref={panelRef} {...swipeRef} className={`custom-scrollbar w-full sm:w-107.5 sm:absolute sm:bottom-full sm:right-0 sm:mb-2 sm:rounded-2xl overflow-auto rounded-t-2xl border border-b-0 sm:border-b border-white/15 bg-black/70 shadow-2xl backdrop-blur-md transition-all duration-300 ${
       showSfxPanel
-        ? "translate-y-0 opacity-100"
-        : "translate-y-6 opacity-0 pointer-events-none"
+        ? "max-h-[60vh] opacity-100 sm:translate-y-0"
+        : "max-h-0 opacity-0 pointer-events-none sm:translate-y-2"
     }`}>
-      <div className="flex justify-center pt-3 pb-1 sm:hidden">
-        <div className="w-12 h-1.5 bg-white/30 rounded-full" />
-      </div>
+
       <div className="p-3">
         <h2 className="text-xl sm:text-2xl font-semibold text-white">
           Ambience
         </h2>
 
-        <div className="mt-3 grid grid-cols-[90px_1fr] items-center gap-2 border-b border-white/10 pb-3">
+        <div className="mt-3 grid grid-cols-[90px_1fr] items-center gap-2 border-b border-white/10 pb-3 pr-3">
           <span className="text-sm text-white/60">Master</span>
           <Slider
             value={masterVolume}
