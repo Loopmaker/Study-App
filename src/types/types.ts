@@ -30,4 +30,16 @@ type MusicCategory = {
   cover: string
 }
 
-export type{ Song, VideoCategory, VideoItem,SoundEffects, MusicCategory}
+type Task = {
+  id: string
+  text: string
+  createdAt: number
+}
+
+type CompletedTask = {
+  id: string
+  text: string
+  completedAt: number
+}
+
+export type { Song, VideoCategory, VideoItem, SoundEffects, MusicCategory, Task, CompletedTask }
