@@ -12,8 +12,9 @@ import PlayerControls from "./components/PlayerControls"
 import MusicPanel from "./components/MusicPanel"
 import SfxControllPanel from "./components/SfxControllPanel"
 import FocusTimer from "./components/FocusTimer"
-import PresetsPanel from "./components/PresetsPanel"
-import { usePresets, type Preset } from "./hooks/usePresets"
+import ScenesPanel from "./components/ScenesPanel"
+import { useScenes } from "./hooks/useScenes"
+import type { Scene } from "./hooks/useScenes"
 import { useLocalStorage } from "./hooks/useLocalStorage"
 
 function App() {
@@ -43,9 +44,9 @@ function App() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
   const [showTimer, setShowTimer] = useState<boolean>(false);
-  const [showPresets, setShowPresets] = useState<boolean>(false);
+  const [showScenes, setShowScenes] = useState<boolean>(false);
   const [sfxVolumes, setSfxVolumes] = useLocalStorage<Record<string, number>>("drowse.sfxVolumes", {});
-  const { presets, savePreset, deletePreset } = usePresets();
+  const { scenes, saveScene, deleteScene } = useScenes();
 
   const musicButtonRef = useRef<HTMLButtonElement>(null);
   const sfxButtonRef = useRef<HTMLButtonElement>(null);
@@ -59,15 +60,27 @@ function App() {
     setSfxVolumes((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleSavePreset = (name: string) => {
-    savePreset({ name, activeMusicCategory, songIndex, sfxVolumes });
+  const handleSaveScene = (name: string) => {
+    saveScene({
+      name,
+      activeVideoCategory,
+      activeVideo: activeVideo ?? videoCategoryData[0].videos[0].src,
+      activeMusicCategory,
+      songIndex,
+      sfxVolumes,
+      timerMode: "pomodoro", // we'll hook this up later
+      customWork: "25",
+      customBreak: "5",
+      customSessions: "4",
+    });
   };
 
-  const handleLoadPreset = (preset: Preset) => {
-    setActiveMusicCategory(preset.activeMusicCategory);
-    setSongIndex(preset.songIndex);
-    setSfxVolumes(preset.sfxVolumes);
-    setIsPlaying(true);
+  const handleLoadScene = (scene: Scene) => {
+    setActiveVideoCategory(scene.activeVideoCategory);
+    setActiveVideo(scene.activeVideo);
+    setActiveMusicCategory(scene.activeMusicCategory);
+    setSongIndex(scene.songIndex);
+    setSfxVolumes(scene.sfxVolumes);
   };
 
   const handleMusicPanelToggle = () => {
@@ -77,42 +90,43 @@ function App() {
     setShowMusicPanel(true);
     setShowSfxPanel(false);
     setShowTimer(false);
-    setShowPresets(false);
+    setShowScenes(false);
   }
 };
 
-const handleSfxPanelToggle = () => {
-  if (showSfxPanel) {
-    setShowSfxPanel(false);
-  } else {
-    setShowSfxPanel(true);
-    setShowMusicPanel(false);
-    setShowTimer(false);
-    setShowPresets(false);
-  }
-};
+  const handleSfxPanelToggle = () => {
+    if (showSfxPanel) {
+      setShowSfxPanel(false);
+    } else {
+      setShowSfxPanel(true);
+      setShowMusicPanel(false);
+      setShowTimer(false);
+      setShowScenes(false);
+    }
+  };
 
-const handleTimerToggle = () => {
-  if (showTimer) {
-    setShowTimer(false);
-  } else {
-    setShowTimer(true);
-    setShowMusicPanel(false);
-    setShowSfxPanel(false);
-    setShowPresets(false);
-  }
-};
+  const handleTimerToggle = () => {
+    if (showTimer) {
+      setShowTimer(false);
+    } else {
+      setShowTimer(true);
+      setShowMusicPanel(false);
+      setShowSfxPanel(false);
+      setShowScenes(false);
+    }
+  };
 
-const handlePresetsToggle = () => {
-  if (showPresets) {
-    setShowPresets(false);
-  } else {
-    setShowPresets(true);
-    setShowMusicPanel(false);
-    setShowSfxPanel(false);
-    setShowTimer(false);
-  }
-};
+  const handleScenesToggle = () => {
+    if (showScenes) {
+      setShowScenes(false);
+    } else {
+      setShowScenes(true);
+      setShowMusicPanel(false);
+      setShowSfxPanel(false);
+      setShowTimer(false);
+    }
+  };
+
   const toogleFullscreen = () => {
     if(!fullscreenRef.current) return;
     if(isFullScreen){
@@ -210,13 +224,13 @@ const handlePresetsToggle = () => {
         
         <FocusTimer showTimer={showTimer} setShowTimer={setShowTimer} timerButtonRef={timerButtonRef} />
 
-        <PresetsPanel
-          showPresets={showPresets}
-          setShowPresets={setShowPresets}
-          presets={presets}
-          onSave={handleSavePreset}
-          onLoad={handleLoadPreset}
-          onDelete={deletePreset}
+        <ScenesPanel
+          showScenes={showScenes}
+          setShowScenes={setShowScenes}
+          scenes={scenes}
+          onSave={handleSaveScene}
+          onLoad={handleLoadScene}
+          onDelete={deleteScene}
           presetsButtonRef={presetsButtonRef}
         />
           <div className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-3 rounded-t-2xl sm:rounded-2xl border border-white/15 border-b-0 sm:border-b bg-black/55 p-3 text-white shadow-2xl backdrop-blur-md md:grid-cols-[1fr_auto_1fr] md:gap-5 md:px-5 md:rounded-2xl md:border-b">
@@ -311,11 +325,11 @@ const handlePresetsToggle = () => {
               <button
                 ref={presetsButtonRef}
                 className={`grid h-12 w-12 place-items-center rounded-full border transition sm:h-11 sm:w-11 ${
-                  showPresets
+                  showScenes 
                     ? "border-emerald-300/70 bg-emerald-300/20"
                     : "border-white/15 bg-white/10 hover:bg-white/15"
                 }`}
-                onClick={handlePresetsToggle}
+                onClick={handleScenesToggle}
                 aria-label="Open presets"
               >
                 <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
