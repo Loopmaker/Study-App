@@ -1,9 +1,18 @@
 import { useState } from "react";
+import videoCategoryData from "../data/videoCategoryData";
+
+export interface SceneIncluded {
+  background: boolean;
+  music: boolean;
+  sfx: boolean;
+}
 
 export interface Scene {
   id: string;
   name: string;
   isDefault?: boolean;
+  thumbnail?: string;
+  included: SceneIncluded;
   // Video
   activeVideoCategory: number;
   activeVideo: string;
@@ -12,57 +21,44 @@ export interface Scene {
   songIndex: number;
   // SFX
   sfxVolumes: Record<string, number>;
-  // Timer
-  timerMode: "pomodoro" | "deepwork" | "custom";
-  customWork: string;
-  customBreak: string;
-  customSessions: string;
 }
-
-import videoCategoryData from "../data/videoCategoryData";
 
 const DEFAULT_SCENES: Scene[] = [
   {
     id: "default-deep-night",
     name: "Deep Night",
     isDefault: true,
-    activeVideoCategory: 2, // Rain
+    thumbnail: videoCategoryData[2].videos[0].thumbnail,
+    included: { background: true, music: true, sfx: true},
+    activeVideoCategory: 2,
     activeVideo: videoCategoryData[2].videos[0].src,
-    activeMusicCategory: 1, // Lo-fi
+    activeMusicCategory: 1,
     songIndex: 0,
     sfxVolumes: { rain: 60, dry_thunder: 30 },
-    timerMode: "deepwork",
-    customWork: "90",
-    customBreak: "20",
-    customSessions: "2",
   },
   {
     id: "default-morning-focus",
     name: "Morning Focus",
     isDefault: true,
-    activeVideoCategory: 0, // Sunshine
+    thumbnail: videoCategoryData[0].videos[0].thumbnail,
+    included: { background: true, music: true, sfx: true },
+    activeVideoCategory: 0,
     activeVideo: videoCategoryData[0].videos[0].src,
-    activeMusicCategory: 3, // Nature
+    activeMusicCategory: 3,
     songIndex: 0,
     sfxVolumes: { forest: 50 },
-    timerMode: "pomodoro",
-    customWork: "25",
-    customBreak: "5",
-    customSessions: "4",
   },
   {
     id: "default-cozy-corner",
     name: "Cozy Corner",
     isDefault: true,
-    activeVideoCategory: 1, // Snow
+    thumbnail: videoCategoryData[1].videos[0].thumbnail,
+    included: { background: true, music: true, sfx: true },
+    activeVideoCategory: 1,
     activeVideo: videoCategoryData[1].videos[0].src,
-    activeMusicCategory: 4, // Sleep
+    activeMusicCategory: 4,
     songIndex: 0,
     sfxVolumes: { fire: 55 },
-    timerMode: "pomodoro",
-    customWork: "25",
-    customBreak: "5",
-    customSessions: "4",
   },
 ];
 
@@ -84,11 +80,10 @@ export function useScenes() {
   const persist = (next: Scene[]) => {
     setScenes(next);
     try {
-      // only persist user scenes, not defaults
       const userScenes = next.filter((s) => !s.isDefault);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(userScenes));
-    } catch {
-      // ignore quota / private-mode errors
+    } catch (error) {
+    console.error("Failed to save scenes to localStorage:", error);
     }
   };
 
@@ -96,10 +91,13 @@ export function useScenes() {
     persist([...scenes, { ...scene, id: crypto.randomUUID(), isDefault: false }]);
   };
 
-  const deleteScene = (id: string) => {
-    // prevent deleting default scenes
-    persist(scenes.filter((s) => s.id !== id || s.isDefault));
+  const updateScene = (id: string, updated: Omit<Scene, "id" | "isDefault">) => {
+    persist(scenes.map((s) => s.id === id ? { ...s, ...updated } : s));
   };
 
-  return { scenes, saveScene, deleteScene };
+  const deleteScene = (id: string) => {
+    persist(scenes.filter((s) => s.id !== id || !!s.isDefault));
+  };
+
+  return { scenes, saveScene, updateScene, deleteScene };
 }

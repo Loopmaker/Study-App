@@ -1,10 +1,10 @@
-# Study App 
+# Drowse
 
-A simple and relaxing companion that helps you focus with calming background sounds and music.
+A simple and relaxing companion that helps you focus with calming background visuals, sounds, and music.
 
 ## What is this?
 
-Drowse is designed to help you concentrate while studying or working. Whether you need soft background music, nature sounds, or ambient effects, this app provides easy-to-use controls to create the perfect focus environment. Just pick your favorite sound, adjust the volume, and get to work!
+Drowse is designed to help you concentrate while studying or working. Whether you need soft background music, nature sounds, ambient effects, or a structured focus timer Drowse lets you build the perfect environment and lock in on what matters. Just pick your scene, set your tasks, and get to work.
 
 **Perfect for:**
 - Students studying for exams
@@ -12,13 +12,17 @@ Drowse is designed to help you concentrate while studying or working. Whether yo
 - Anyone who needs help staying focused
 - Those looking to relax during breaks
 
-## Features 
+## Features
 
-- **Multiple Music Categories** - Choose from different types of background music to match your mood
-- **Sound Effects Controls** - Add extra ambient sounds like rain, wind, or office noise
-- **Easy Volume Control** - Adjust music and sound effects to your preference
+- **Video Backgrounds** - Looping ambient videos that set the mood for your session
+- **Multiple Music Categories** - Choose from Lo-fi, Ambient, Nature, Sleep, and more
+- **Sound Effects Mixer** - Layer ambient sounds like rain, fire, wind, or forest with individual volume controls
+- **Focus Timer** - Pomodoro, Deep Work, and Custom modes with a looping alarm that doesn't stop until you do
+- **Task Lock-in** - Add tasks, pick one to focus on, and mark it done when finished — completed tasks move to history
+- **Scenes** - Save your entire setup (background, music, ambience) as a scene and load it in one click. Includes built-in scenes: Deep Night, Morning Focus, and Cozy Corner
+- **Easy Volume Control** - Adjust music and sound effects independently with a master ambience control
 - **Mobile Friendly** - Works smoothly on phones, tablets, and computers
-- **Simple and Intuitive** - No complicated settings—just pick a sound and start focusing
+- **No Account Needed** - Everything is saved locally in your browser
 
 ## Technologies Used
 
@@ -26,27 +30,29 @@ Drowse is designed to help you concentrate while studying or working. Whether yo
 - **TypeScript** - For adding static typing and improving code reliability
 - **Tailwind CSS** - For styling and making it look great
 - **Material-UI** - For interactive components like sliders
+- **Cloudinary** - For hosting videos and audio assets
+- **Web Audio API** - For the SFX mixer and alarm system
 
 ## How to Use
 
 1. Open the app in your browser
-2. Click the music icon to browse different sound categories
-3. Select your favorite background music
-4. Use the SFX (Sound Effects) button to add extra ambient sounds
-5. Adjust the volume to your liking using the volume control
-6. Start studying or working!
+2. Click the arrow at the top to pick a video background
+3. Click the music icon to browse and play background music
+4. Use the SFX button to layer in ambient sounds
+5. Open the timer, pick a mode, add your tasks, and lock in
+6. Save your setup as a Scene to reload it anytime
 
-## Future Ideas 
+## Future Ideas
 
-- Save favorite sound combinations as presets
-- Timer feature to set focused study sessions
-- Different themes (dark mode, light mode, etc.)
-- More sound categories and effects
-- Ability to upload custom sounds
-- Focus statistics to track study sessions
+- Weather widget based on your location
+- Habit tracker with streak counters
+- More video categories and sound effects
+- Custom scene thumbnails
+- Focus session statistics
+- Keyboard shortcuts
 
 ## Getting Started
 
-Simply open the app in your web browser and start using it—no installation and account needed!
+Simply open the app in your web browser and start using it — no installation or account needed!
 
 ---

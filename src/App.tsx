@@ -14,7 +14,7 @@ import SfxControllPanel from "./components/SfxControllPanel"
 import FocusTimer from "./components/FocusTimer"
 import ScenesPanel from "./components/ScenesPanel"
 import { useScenes } from "./hooks/useScenes"
-import type { Scene } from "./hooks/useScenes"
+import type { Scene, SceneIncluded } from "./hooks/useScenes"
 import { useLocalStorage } from "./hooks/useLocalStorage"
 
 function App() {
@@ -46,7 +46,7 @@ function App() {
   const [showTimer, setShowTimer] = useState<boolean>(false);
   const [showScenes, setShowScenes] = useState<boolean>(false);
   const [sfxVolumes, setSfxVolumes] = useLocalStorage<Record<string, number>>("drowse.sfxVolumes", {});
-  const { scenes, saveScene, deleteScene } = useScenes();
+  const { scenes, saveScene, updateScene, deleteScene } = useScenes();
 
   const musicButtonRef = useRef<HTMLButtonElement>(null);
   const sfxButtonRef = useRef<HTMLButtonElement>(null);
@@ -60,27 +60,52 @@ function App() {
     setSfxVolumes((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleSaveScene = (name: string) => {
-    saveScene({
-      name,
-      activeVideoCategory,
-      activeVideo: activeVideo ?? videoCategoryData[0].videos[0].src,
-      activeMusicCategory,
-      songIndex,
-      sfxVolumes,
-      timerMode: "pomodoro", // we'll hook this up later
-      customWork: "25",
-      customBreak: "5",
-      customSessions: "4",
-    });
-  };
+  const handleSaveScene = (name: string, included: SceneIncluded) => {
+  const thumbnail = videoCategoryData[activeVideoCategory].videos.find(
+    (v) => v.src === activeVideo
+  )?.thumbnail;
+
+  saveScene({
+    name,
+    included,
+    thumbnail,
+    activeVideoCategory,
+    activeVideo: activeVideo ?? videoCategoryData[0].videos[0].src,
+    activeMusicCategory,
+    songIndex,
+    sfxVolumes,
+  });
+};
+
+const handleUpdateScene = (id: string, name: string, included: SceneIncluded) => {
+  const thumbnail = videoCategoryData[activeVideoCategory].videos.find(
+    (v) => v.src === activeVideo
+  )?.thumbnail;
+
+  updateScene(id, {
+    name,
+    included,
+    thumbnail,
+    activeVideoCategory,
+    activeVideo: activeVideo ?? videoCategoryData[0].videos[0].src,
+    activeMusicCategory,
+    songIndex,
+    sfxVolumes,
+  });
+};
 
   const handleLoadScene = (scene: Scene) => {
-    setActiveVideoCategory(scene.activeVideoCategory);
-    setActiveVideo(scene.activeVideo);
-    setActiveMusicCategory(scene.activeMusicCategory);
-    setSongIndex(scene.songIndex);
-    setSfxVolumes(scene.sfxVolumes);
+    if (scene.included.background) {
+      setActiveVideoCategory(scene.activeVideoCategory);
+      setActiveVideo(scene.activeVideo);
+    }
+    if (scene.included.music) {
+      setActiveMusicCategory(scene.activeMusicCategory);
+      setSongIndex(scene.songIndex);
+    }
+    if (scene.included.sfx) {
+      setSfxVolumes(scene.sfxVolumes);
+    }
   };
 
   const handleMusicPanelToggle = () => {
@@ -230,6 +255,7 @@ function App() {
           scenes={scenes}
           onSave={handleSaveScene}
           onLoad={handleLoadScene}
+          onUpdate={handleUpdateScene}
           onDelete={deleteScene}
           presetsButtonRef={presetsButtonRef}
         />
