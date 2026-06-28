@@ -235,11 +235,11 @@ function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
       ref={panelRef}
       className={`custom-scrollbar w-full sm:w-96 sm:absolute sm:bottom-full sm:right-0 sm:mb-2 sm:rounded-2xl overflow-auto rounded-t-2xl border border-b-0 sm:border-b border-white/15 bg-black/70 shadow-2xl backdrop-blur-md transition-all duration-300 ${
         showTimer
-          ? "max-h-[80vh] opacity-100 sm:translate-y-0"
+          ? "max-h-[60vh] sm:max-h-[80vh] opacity-100 sm:translate-y-0"
           : "max-h-0 opacity-0 pointer-events-none sm:translate-y-2"
       }`}
     >
-      <div className="p-4 text-white flex flex-col gap-4">
+      <div className="p-3 sm:p-4 text-white flex flex-col gap-3">
 
         {/* Mode Selector */}
         <div className="flex gap-1 p-1 rounded-xl bg-white/5 border border-white/10">
@@ -298,7 +298,7 @@ function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
 
         {/* Timer Display */}
         <div
-          className="text-center text-7xl font-bold leading-none"
+          className="text-center text-5xl sm:text-7xl font-bold leading-none"
           style={{
             fontFamily: "var(--font-mono, 'Courier New', monospace)",
             color: alarmRinging ? "#fc8181" : "#fff",
@@ -320,7 +320,7 @@ function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
           ) : (
             <button
               onClick={() => setIsRunning((prev) => !prev)}
-              className="flex-1 py-2.5 rounded-xl text-sm font-semibold cursor-pointer transition-colors text-white"
+              className="flex-1 py-2 sm:py-2.5 rounded-xl text-sm font-semibold cursor-pointer transition-colors text-white"
               style={{
                 backgroundColor: isRunning
                   ? "rgba(255,255,255,0.15)"
@@ -332,7 +332,7 @@ function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
           )}
           <button
             onClick={handleReset}
-            className="px-5 py-2.5 rounded-xl text-sm font-medium cursor-pointer border border-white/15 bg-white/5 hover:bg-white/10 transition-colors text-white/70"
+            className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-sm font-medium cursor-pointer border border-white/15 bg-white/5 hover:bg-white/10 transition-colors text-white/70"
           >
             Reset
           </button>
