@@ -45,7 +45,7 @@ function App() {
   const [hasError, setHasError] = useState<boolean>(false);
   const [showTimer, setShowTimer] = useState<boolean>(false);
   const [showScenes, setShowScenes] = useState<boolean>(false);
-  const [sfxVolumes, setSfxVolumes] = useLocalStorage<Record<string, number>>("drowse.sfxVolumes", {});
+  const [sfxVolumes, setSfxVolumes] = useState<Record<string, number>>({});
   const { scenes, saveScene, updateScene, deleteScene } = useScenes();
 
   const musicButtonRef = useRef<HTMLButtonElement>(null);
