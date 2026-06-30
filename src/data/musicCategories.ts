@@ -6,6 +6,7 @@ import cover__fish from "../assets/covers/cover--fish.jpg";
 import cover__lofi from "../assets/covers/cover--lofi.jpg";
 import cover__sleep from "../assets/covers/cover--sleep.jpg";
 import cover__ambient from "../assets/covers/cover--ambient.jpg";
+import cover__jazz from "../assets/covers/cover--jazz.jpg";
 import { cdnAudio } from "../config/cloudinary";
 
 
@@ -28,6 +29,11 @@ const audio = {
   documentary_nature_ambient:        cdnAudio("documentary_nature_ambient_derfdp"),
   flute_rain_ambiance:               cdnAudio("flute_rain_ambiance_o4qry5"),
   inspiring_violin_background_music: cdnAudio("inspiring_violin_background_music_rraiqr"),
+  modern_jazz_2:                     cdnAudio("modern-jazz-2_wgnwdj"),
+  modern_jazz:                       cdnAudio("modern-jazz_dwqwxt"),
+  lofi_jazz:                         cdnAudio("lofi-jazz_kg3omw"),
+  traditional_jazz:                  cdnAudio("traditional-jazz_z9l5wa"),
+  smooth_jazz:                       cdnAudio("smooth-jazz_kchhhm"),
 }
 
 const musicCategories: MusicCategory[] = [
@@ -54,6 +60,11 @@ const musicCategories: MusicCategory[] = [
       { id: uuidv4(), title: "Silent Calm Piano",                 artist: "Various Artists", src: audio.silent_calm_piano },
       { id: uuidv4(), title: "Violin Sad",                        artist: "Various Artists", src: audio.violin_sad },
       { id: uuidv4(), title: "Inspiring Violin Background Music", artist: "Various Artists", src: audio.inspiring_violin_background_music },
+      { id: uuidv4(), title: "Modern Jazz",      artist: "Various Artists", src: audio.modern_jazz },
+      { id: uuidv4(), title: "Modern Jazz II",   artist: "Various Artists", src: audio.modern_jazz_2 },
+      { id: uuidv4(), title: "Lo-fi Jazz",       artist: "Various Artists", src: audio.lofi_jazz },
+      { id: uuidv4(), title: "Traditional Jazz", artist: "Various Artists", src: audio.traditional_jazz },
+      { id: uuidv4(), title: "Smooth Jazz",      artist: "Various Artists", src: audio.smooth_jazz },
     ],
   },
   {
@@ -102,6 +113,18 @@ const musicCategories: MusicCategory[] = [
       { id: uuidv4(), title: "Inspiring Violin Background Music", artist: "Various Artists", src: audio.inspiring_violin_background_music },
     ],
   },
+  {
+  id: uuidv4(),
+  category: "Jazz",
+  cover: cover__jazz,
+  music: [
+    { id: uuidv4(), title: "Modern Jazz",      artist: "Various Artists", src: audio.modern_jazz },
+    { id: uuidv4(), title: "Modern Jazz II",   artist: "Various Artists", src: audio.modern_jazz_2 },
+    { id: uuidv4(), title: "Lo-fi Jazz",       artist: "Various Artists", src: audio.lofi_jazz },
+    { id: uuidv4(), title: "Traditional Jazz", artist: "Various Artists", src: audio.traditional_jazz },
+    { id: uuidv4(), title: "Smooth Jazz",      artist: "Various Artists", src: audio.smooth_jazz },
+  ],
+},
 ];
 
 
