@@ -7,10 +7,10 @@ interface Props {
   showMusicPanel: boolean
   activeMusicCategory: number
   setActiveMusicCategory: (category: number) => void
-  songIndex: number
   setSongIndex: (index: number) => void
   setShowMusicPanel: (show: boolean) => void
   musicButtonRef?: React.RefObject<HTMLButtonElement | null>
+  currentTrackSrc?: string | null
 }
 
 function MusicPanel({
@@ -18,9 +18,9 @@ function MusicPanel({
   activeMusicCategory,
   setActiveMusicCategory,
   setShowMusicPanel,
-  songIndex,
   setSongIndex,
-  musicButtonRef 
+  musicButtonRef,
+  currentTrackSrc,
 }: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
   useClickOutside(panelRef, setShowMusicPanel, showMusicPanel, musicButtonRef ? [musicButtonRef] : undefined);
@@ -30,7 +30,7 @@ function MusicPanel({
 
   const selectSong = (songId: string) => {
     const newIndex = musicCategories[browsingCategory].music.findIndex(s => s.id === songId);
-    setActiveMusicCategory(browsingCategory); 
+    setActiveMusicCategory(browsingCategory);
     setSongIndex(newIndex);
   };
 
@@ -54,7 +54,7 @@ function MusicPanel({
         {browsingCategory !== null && (
           <div className="p-3 flex flex-col gap-2">
             {musicCategories[browsingCategory].music.map((song) => {
-              const isCurrentlyPlaying = activeMusicCategory === browsingCategory && songIndex === musicCategories[browsingCategory].music.findIndex(s => s.id === song.id);
+              const isCurrentlyPlaying = currentTrackSrc === song.src;
               return (
               <button 
                 key={song.id}

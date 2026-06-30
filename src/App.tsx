@@ -233,10 +233,10 @@ const handleUpdateScene = (id: string, name: string, included: SceneIncluded) =>
           showMusicPanel={showMusicPanel}
           activeMusicCategory={activeMusicCategory}
           setActiveMusicCategory={setActiveMusicCategory}
-          songIndex={songIndex}
           setSongIndex={setSongIndex}
           setShowMusicPanel={setShowMusicPanel}
           musicButtonRef={musicButtonRef}
+          currentTrackSrc={currentTrack?.src}
         />
 
         <SfxControllPanel
