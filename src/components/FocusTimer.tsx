@@ -239,7 +239,7 @@ function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
           : "max-h-0 opacity-0 pointer-events-none sm:translate-y-2"
       }`}
     >
-      <div className="p-3 sm:p-4 text-white flex flex-col gap-3">
+      <div className="p-3 sm:p-4 text-white flex flex-col gap-2 sm:gap-4">
 
         {/* Mode Selector */}
         <div className="flex gap-1 p-1 rounded-xl bg-white/5 border border-white/10">
@@ -259,40 +259,40 @@ function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
         </div>
 
         {/* Custom Settings */}
-        {mode === "custom" && (
-          <div className="flex flex-col gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
-            {[
-              { label: "Work (min)", value: customWork, set: setCustomWork },
-              { label: "Break (min)", value: customBreak, set: setCustomBreak },
-              { label: "Sessions", value: customSessions, set: setCustomSessions },
-            ].map(({ label, value, set }) => (
-              <div key={label} className="flex items-center justify-between">
-                <span className="text-xs text-white/50">{label}</span>
-                <input
-                  type="number"
-                  min={1}
-                  value={value}
-                  onChange={(e) => set(e.target.value)}
-                  onFocus={(e) => e.target.select()}
-                  onBlur={(e) => {
-                    const num = parseInt(e.target.value);
-                    if (!num || num < 1) set("1");
-                  }}
-                  className="w-16 px-2 py-1 rounded-lg text-xs text-center outline-none bg-white/10 border border-white/15 text-white"
-                />
-              </div>
-            ))}
-            <button
-              onClick={applyCustom}
-              className="py-2 rounded-lg text-xs font-semibold text-white cursor-pointer bg-white/15 hover:bg-white/20 transition-colors"
-            >
-              Apply
-            </button>
-          </div>
-        )}
+         {mode === "custom" && (
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10 flex-wrap">
+              {[
+                { label: "Work", value: customWork, set: setCustomWork },
+                { label: "Break", value: customBreak, set: setCustomBreak },
+                { label: "Sessions", value: customSessions, set: setCustomSessions },
+              ].map(({ label, value, set }) => (
+                <div key={label} className="flex items-center gap-1.5 flex-1">
+                  <span className="text-xs text-white/50 shrink-0">{label}</span>
+                  <input
+                    type="number"
+                    min={1}
+                    value={value}
+                    onChange={(e) => set(e.target.value)}
+                    onFocus={(e) => e.target.select()}
+                    onBlur={(e) => {
+                      const num = parseInt(e.target.value);
+                      if (!num || num < 1) set("1");
+                    }}
+                    className="w-12 px-2 py-1 rounded-lg text-xs text-center outline-none bg-white/10 border border-white/15 text-white"
+                  />
+                </div>
+              ))}
+              <button
+                onClick={applyCustom}
+                className="w-full py-1.5 rounded-lg text-xs font-semibold text-white cursor-pointer bg-white/15 hover:bg-white/20 transition-colors"
+              >
+                Apply
+              </button>
+            </div>
+          )}
 
         {/* Phase + Session */}
-        <p className="text-xs text-center uppercase tracking-widest text-white/40">
+        <p className="text-xs text-center uppercase tracking-widest text-white/40 my-0">
           {phase === "work" ? "Focus" : "Break"} · Session {currentSession} of {sessions}
         </p>
 
@@ -339,14 +339,14 @@ function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
         </div>
 
         {/* Alarm Sound */}
-        <div className="flex flex-col gap-2">
-          <p className="text-xs text-white/40">Alarm</p>
-          <div className="flex gap-2">
+        <div className="flex items-center gap-2">
+          <p className="text-xs text-white/40 shrink-0">Alarm</p>
+          <div className="flex gap-1 flex-1">
             {ALARM_SOUNDS.map((sound, i) => (
               <button
                 key={sound.label}
                 onClick={() => setAlarmIndex(i)}
-                className="flex-1 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-colors border border-white/15"
+                className="flex-1 py-1 rounded-lg text-xs font-medium cursor-pointer transition-colors border border-white/15"
                 style={{
                   backgroundColor: alarmIndex === i ? "rgba(255,255,255,0.15)" : "transparent",
                   color: alarmIndex === i ? "#fff" : "rgba(255,255,255,0.45)",
