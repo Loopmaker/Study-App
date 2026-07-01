@@ -242,54 +242,67 @@ function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
       <div className="p-3 sm:p-4 text-white flex flex-col gap-2 sm:gap-4">
 
         {/* Mode Selector */}
-        <div className="flex gap-1 p-1 rounded-xl bg-white/5 border border-white/10">
-          {(["pomodoro", "deepwork", "custom"] as TimerMode[]).map((m) => (
-            <button
-              key={m}
-              onClick={() => handleModeChange(m)}
-              className="flex-1 px-2 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer"
+          <div className="relative flex gap-1 p-1 rounded-xl bg-white/5 border border-white/10">
+            {/* Sliding pill */}
+            <div
+              className="absolute top-1 bottom-1 rounded-lg bg-white/15 transition-all duration-300 ease-out"
               style={{
-                backgroundColor: mode === m ? "rgba(255,255,255,0.15)" : "transparent",
-                color: mode === m ? "#fff" : "rgba(255,255,255,0.45)",
+                width: `calc(${100 / 3}% - 4px)`,
+                left: `calc(${["pomodoro", "deepwork", "custom"].indexOf(mode) * (100 / 3)}% + 2px)`,
               }}
-            >
-              {m === "deepwork" ? "Deep Work" : m.charAt(0).toUpperCase() + m.slice(1)}
-            </button>
-          ))}
-        </div>
+            />
+            {(["pomodoro", "deepwork", "custom"] as TimerMode[]).map((m) => (
+              <button
+                key={m}
+                onClick={() => handleModeChange(m)}
+                className="relative z-10 flex-1 px-2 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer"
+                style={{
+                  color: mode === m ? "#fff" : "rgba(255,255,255,0.45)",
+                }}
+              >
+                {m === "deepwork" ? "Deep Work" : m.charAt(0).toUpperCase() + m.slice(1)}
+              </button>
+            ))}
+          </div>
 
         {/* Custom Settings */}
-         {mode === "custom" && (
-            <div className="flex items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10 flex-wrap">
-              {[
-                { label: "Work", value: customWork, set: setCustomWork },
-                { label: "Break", value: customBreak, set: setCustomBreak },
-                { label: "Sessions", value: customSessions, set: setCustomSessions },
-              ].map(({ label, value, set }) => (
-                <div key={label} className="flex items-center gap-1.5 flex-1">
-                  <span className="text-xs text-white/50 shrink-0">{label}</span>
-                  <input
-                    type="number"
-                    min={1}
-                    value={value}
-                    onChange={(e) => set(e.target.value)}
-                    onFocus={(e) => e.target.select()}
-                    onBlur={(e) => {
-                      const num = parseInt(e.target.value);
-                      if (!num || num < 1) set("1");
-                    }}
-                    className="w-12 px-2 py-1 rounded-lg text-xs text-center outline-none bg-white/10 border border-white/15 text-white"
-                  />
-                </div>
-              ))}
-              <button
-                onClick={applyCustom}
-                className="w-full py-1.5 rounded-lg text-xs font-semibold text-white cursor-pointer bg-white/15 hover:bg-white/20 transition-colors"
-              >
-                Apply
-              </button>
+          <div
+            className={`grid transition-all duration-300 ease-out ${
+              mode === "custom" ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+            }`}
+          >
+            <div className="overflow-hidden">
+              <div className="flex items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10 flex-wrap">
+                {[
+                  { label: "Work", value: customWork, set: setCustomWork },
+                  { label: "Break", value: customBreak, set: setCustomBreak },
+                  { label: "Sessions", value: customSessions, set: setCustomSessions },
+                ].map(({ label, value, set }) => (
+                  <div key={label} className="flex items-center gap-1.5 flex-1">
+                    <span className="text-xs text-white/50 shrink-0">{label}</span>
+                    <input
+                      type="number"
+                      min={1}
+                      value={value}
+                      onChange={(e) => set(e.target.value)}
+                      onFocus={(e) => e.target.select()}
+                      onBlur={(e) => {
+                        const num = parseInt(e.target.value);
+                        if (!num || num < 1) set("1");
+                      }}
+                      className="w-12 px-2 py-1 rounded-lg text-xs text-center outline-none bg-white/10 border border-white/15 text-white"
+                    />
+                  </div>
+                ))}
+                <button
+                  onClick={applyCustom}
+                  className="w-full py-1.5 rounded-lg text-xs font-semibold text-white cursor-pointer bg-white/15 hover:bg-white/20 transition-colors"
+                >
+                  Apply
+                </button>
+              </div>
             </div>
-          )}
+          </div>
 
         {/* Phase + Session */}
         <p className="text-xs text-center uppercase tracking-widest text-white/40 my-0">
