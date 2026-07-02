@@ -23,10 +23,12 @@ const ALARM_SOUNDS: { label: string; src: string }[] = [
   { label: "Bell", src: cdnAudio("bell_bxxakh") },
   { label: "Chime", src: cdnAudio("chime_wbckcc") },
   { label: "Beep", src: cdnAudio("beep_znspxk") },
-]
+];
 
 function formatTime(seconds: number): string {
-  const m = Math.floor(seconds / 60).toString().padStart(2, "0");
+  const m = Math.floor(seconds / 60)
+    .toString()
+    .padStart(2, "0");
   const s = (seconds % 60).toString().padStart(2, "0");
   return `${m}:${s}`;
 }
@@ -42,11 +44,19 @@ function formatDate(ts: number): string {
 
 function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
-  useClickOutside(panelRef, setShowTimer, showTimer, timerButtonRef ? [timerButtonRef] : undefined);
+  useClickOutside(
+    panelRef,
+    setShowTimer,
+    showTimer,
+    timerButtonRef ? [timerButtonRef] : undefined,
+  );
 
   // Tasks
   const [tasks, setTasks] = useLocalStorage<Task[]>("drowse.tasks", []);
-  const [completed, setCompleted] = useLocalStorage<CompletedTask[]>("drowse.completed", []);
+  const [completed, setCompleted] = useLocalStorage<CompletedTask[]>(
+    "drowse.completed",
+    [],
+  );
   const [taskInput, setTaskInput] = useState("");
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
@@ -54,7 +64,9 @@ function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
   // Timer
   const [mode, setMode] = useState<TimerMode>("pomodoro");
   const [phase, setPhase] = useState<TimerPhase>("work");
-  const [secondsLeft, setSecondsLeft] = useState(PRESETS.pomodoro.workDuration * 60);
+  const [secondsLeft, setSecondsLeft] = useState(
+    PRESETS.pomodoro.workDuration * 60,
+  );
   const [isRunning, setIsRunning] = useState(false);
   const [currentSession, setCurrentSession] = useState(1);
   const [sessions, setSessions] = useState(PRESETS.pomodoro.sessions);
@@ -110,8 +122,6 @@ function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
   const triggerAlarm = useCallback(() => {
     if (alarmRef.current) return;
 
-    console.log("Alarm triggered");
-
     setIsRunning(false);
     setAlarmRinging(true);
 
@@ -121,8 +131,6 @@ function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
 
     alarmRef.current = audio;
   }, [alarmIndex]);
-
-
 
   useEffect(() => {
     if (isRunning) {
@@ -173,8 +181,14 @@ function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
   };
 
   const advanceSession = () => {
-    const workSecs = (mode === "custom" ? parseInt(customWork) || 1 : PRESETS[mode].workDuration) * 60;
-    const breakSecs = (mode === "custom" ? parseInt(customBreak) || 1 : PRESETS[mode].breakDuration) * 60;
+    const workSecs =
+      (mode === "custom"
+        ? parseInt(customWork) || 1
+        : PRESETS[mode].workDuration) * 60;
+    const breakSecs =
+      (mode === "custom"
+        ? parseInt(customBreak) || 1
+        : PRESETS[mode].breakDuration) * 60;
 
     if (phase === "work") {
       if (currentSession >= sessions) {
@@ -193,17 +207,17 @@ function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
   };
 
   const stopAlarm = () => {
-  if (alarmRef.current) {
-    alarmRef.current.loop = false;
-    alarmRef.current.pause();
-    alarmRef.current.currentTime = 0;
-    alarmRef.current.src = "";
-    alarmRef.current.load();
-    alarmRef.current = null;
-  }
-  setAlarmRinging(false);
-  advanceSession();
-};
+    if (alarmRef.current) {
+      alarmRef.current.loop = false;
+      alarmRef.current.pause();
+      alarmRef.current.currentTime = 0;
+      alarmRef.current.src = "";
+      alarmRef.current.load();
+      alarmRef.current = null;
+    }
+    setAlarmRinging(false);
+    advanceSession();
+  };
 
   const handleReset = () => {
     clearInterval(intervalRef.current!);
@@ -219,16 +233,19 @@ function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
     setIsRunning(false);
     setPhase("work");
     setCurrentSession(1);
-    const workSecs = (mode === "custom" ? parseInt(customWork) || 1 : PRESETS[mode].workDuration) * 60;
+    const workSecs =
+      (mode === "custom"
+        ? parseInt(customWork) || 1
+        : PRESETS[mode].workDuration) * 60;
     setSecondsLeft(workSecs);
   };
 
   useEffect(() => {
-  return () => {
-    alarmRef.current?.pause();
-    alarmRef.current = null;
-  };
-}, []);
+    return () => {
+      alarmRef.current?.pause();
+      alarmRef.current = null;
+    };
+  }, []);
 
   return (
     <div
@@ -240,73 +257,83 @@ function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
       }`}
     >
       <div className="p-3 sm:p-4 text-white flex flex-col gap-2 sm:gap-4">
-
         {/* Mode Selector */}
-          <div className="relative flex gap-1 p-1 rounded-xl bg-white/5 border border-white/10">
-            {/* Sliding pill */}
-            <div
-              className="absolute top-1 bottom-1 rounded-lg bg-white/15 transition-all duration-300 ease-out"
+        <div className="relative flex gap-1 p-1 rounded-xl bg-white/5 border border-white/10">
+          {/* Sliding pill */}
+          <div
+            className="absolute top-1 bottom-1 rounded-lg bg-white/15 transition-all duration-300 ease-out"
+            style={{
+              width: `calc(${100 / 3}% - 4px)`,
+              left: `calc(${["pomodoro", "deepwork", "custom"].indexOf(mode) * (100 / 3)}% + 2px)`,
+            }}
+          />
+          {(["pomodoro", "deepwork", "custom"] as TimerMode[]).map((m) => (
+            <button
+              key={m}
+              onClick={() => handleModeChange(m)}
+              className="relative z-10 flex-1 px-2 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer"
               style={{
-                width: `calc(${100 / 3}% - 4px)`,
-                left: `calc(${["pomodoro", "deepwork", "custom"].indexOf(mode) * (100 / 3)}% + 2px)`,
+                color: mode === m ? "#fff" : "rgba(255,255,255,0.45)",
               }}
-            />
-            {(["pomodoro", "deepwork", "custom"] as TimerMode[]).map((m) => (
-              <button
-                key={m}
-                onClick={() => handleModeChange(m)}
-                className="relative z-10 flex-1 px-2 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer"
-                style={{
-                  color: mode === m ? "#fff" : "rgba(255,255,255,0.45)",
-                }}
-              >
-                {m === "deepwork" ? "Deep Work" : m.charAt(0).toUpperCase() + m.slice(1)}
-              </button>
-            ))}
-          </div>
+            >
+              {m === "deepwork"
+                ? "Deep Work"
+                : m.charAt(0).toUpperCase() + m.slice(1)}
+            </button>
+          ))}
+        </div>
 
         {/* Custom Settings */}
-          <div
-            className={`grid transition-all duration-300 ease-out ${
-              mode === "custom" ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-            }`}
-          >
-            <div className="overflow-hidden">
-              <div className="flex items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10 flex-wrap">
-                {[
-                  { label: "Work", value: customWork, set: setCustomWork },
-                  { label: "Break", value: customBreak, set: setCustomBreak },
-                  { label: "Sessions", value: customSessions, set: setCustomSessions },
-                ].map(({ label, value, set }) => (
-                  <div key={label} className="flex items-center gap-1.5 flex-1">
-                    <span className="text-xs text-white/50 shrink-0">{label}</span>
-                    <input
-                      type="number"
-                      min={1}
-                      value={value}
-                      onChange={(e) => set(e.target.value)}
-                      onFocus={(e) => e.target.select()}
-                      onBlur={(e) => {
-                        const num = parseInt(e.target.value);
-                        if (!num || num < 1) set("1");
-                      }}
-                      className="w-12 px-2 py-1 rounded-lg text-xs text-center outline-none bg-white/10 border border-white/15 text-white"
-                    />
-                  </div>
-                ))}
-                <button
-                  onClick={applyCustom}
-                  className="w-full py-1.5 rounded-lg text-xs font-semibold text-white cursor-pointer bg-white/15 hover:bg-white/20 transition-colors"
-                >
-                  Apply
-                </button>
-              </div>
+        <div
+          className={`grid transition-all duration-300 ease-out ${
+            mode === "custom"
+              ? "grid-rows-[1fr] opacity-100"
+              : "grid-rows-[0fr] opacity-0"
+          }`}
+        >
+          <div className="overflow-hidden">
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10 flex-wrap">
+              {[
+                { label: "Work", value: customWork, set: setCustomWork },
+                { label: "Break", value: customBreak, set: setCustomBreak },
+                {
+                  label: "Sessions",
+                  value: customSessions,
+                  set: setCustomSessions,
+                },
+              ].map(({ label, value, set }) => (
+                <div key={label} className="flex items-center gap-1.5 flex-1">
+                  <span className="text-xs text-white/50 shrink-0">
+                    {label}
+                  </span>
+                  <input
+                    type="number"
+                    min={1}
+                    value={value}
+                    onChange={(e) => set(e.target.value)}
+                    onFocus={(e) => e.target.select()}
+                    onBlur={(e) => {
+                      const num = parseInt(e.target.value);
+                      if (!num || num < 1) set("1");
+                    }}
+                    className="w-12 px-2 py-1 rounded-lg text-xs text-center outline-none bg-white/10 border border-white/15 text-white"
+                  />
+                </div>
+              ))}
+              <button
+                onClick={applyCustom}
+                className="w-full py-1.5 rounded-lg text-xs font-semibold text-white cursor-pointer bg-white/15 hover:bg-white/20 transition-colors"
+              >
+                Apply
+              </button>
             </div>
           </div>
+        </div>
 
         {/* Phase + Session */}
         <p className="text-xs text-center uppercase tracking-widest text-white/40 my-0">
-          {phase === "work" ? "Focus" : "Break"} · Session {currentSession} of {sessions}
+          {phase === "work" ? "Focus" : "Break"} · Session {currentSession} of{" "}
+          {sessions}
         </p>
 
         {/* Timer Display */}
@@ -361,7 +388,8 @@ function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
                 onClick={() => setAlarmIndex(i)}
                 className="flex-1 py-1 rounded-lg text-xs font-medium cursor-pointer transition-colors border border-white/15"
                 style={{
-                  backgroundColor: alarmIndex === i ? "rgba(255,255,255,0.15)" : "transparent",
+                  backgroundColor:
+                    alarmIndex === i ? "rgba(255,255,255,0.15)" : "transparent",
                   color: alarmIndex === i ? "#fff" : "rgba(255,255,255,0.45)",
                 }}
               >
@@ -379,7 +407,9 @@ function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
           className="px-3 py-2.5 rounded-xl text-sm border"
           style={{
             backgroundColor: "rgba(255,255,255,0.05)",
-            borderColor: activeTask ? "rgba(52,211,153,0.5)" : "rgba(255,255,255,0.1)",
+            borderColor: activeTask
+              ? "rgba(52,211,153,0.5)"
+              : "rgba(255,255,255,0.1)",
             color: activeTask ? "rgb(52,211,153)" : "rgba(255,255,255,0.35)",
           }}
         >
@@ -418,8 +448,12 @@ function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
                 key={task.id}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-all"
                 style={{
-                  borderColor: isActive ? "rgba(52,211,153,0.5)" : "rgba(255,255,255,0.1)",
-                  backgroundColor: isActive ? "rgba(52,211,153,0.08)" : "rgba(255,255,255,0.03)",
+                  borderColor: isActive
+                    ? "rgba(52,211,153,0.5)"
+                    : "rgba(255,255,255,0.1)",
+                  backgroundColor: isActive
+                    ? "rgba(52,211,153,0.08)"
+                    : "rgba(255,255,255,0.03)",
                 }}
               >
                 {/* Complete button */}
@@ -433,7 +467,11 @@ function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
                 <span
                   onClick={() => handleSelectTask(task.id)}
                   className="text-sm flex-1 cursor-pointer select-none"
-                  style={{ color: isActive ? "rgb(52,211,153)" : "rgba(255,255,255,0.8)" }}
+                  style={{
+                    color: isActive
+                      ? "rgb(52,211,153)"
+                      : "rgba(255,255,255,0.8)",
+                  }}
                 >
                   {task.text}
                 </span>
@@ -476,11 +514,24 @@ function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-4 h-4 rounded-full shrink-0 bg-emerald-400/60 flex items-center justify-center">
-                        <svg width="8" height="8" viewBox="0 0 10 10" fill="none">
-                          <path d="M2 5L4 7L8 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        <svg
+                          width="8"
+                          height="8"
+                          viewBox="0 0 10 10"
+                          fill="none"
+                        >
+                          <path
+                            d="M2 5L4 7L8 3"
+                            stroke="white"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
                         </svg>
                       </div>
-                      <span className="text-xs line-through text-white/30">{task.text}</span>
+                      <span className="text-xs line-through text-white/30">
+                        {task.text}
+                      </span>
                     </div>
                     <span className="text-xs text-white/25 shrink-0 ml-3">
                       {formatDate(task.completedAt)}
@@ -491,7 +542,6 @@ function FocusTimer({ showTimer, setShowTimer, timerButtonRef }: Props) {
             )}
           </div>
         )}
-
       </div>
     </div>
   );
