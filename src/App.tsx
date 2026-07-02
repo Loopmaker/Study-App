@@ -51,7 +51,7 @@ function App() {
   const musicButtonRef = useRef<HTMLButtonElement>(null);
   const sfxButtonRef = useRef<HTMLButtonElement>(null);
   const timerButtonRef = useRef<HTMLButtonElement>(null);
-  const presetsButtonRef = useRef<HTMLButtonElement>(null);
+  const scenesButtonRef = useRef<HTMLButtonElement>(null);
 
   const sceneControlVisibility = () => {
     setIsSceneControlVisible(!isSceneControlVisible)
@@ -257,7 +257,7 @@ const handleUpdateScene = (id: string, name: string, included: SceneIncluded) =>
           onLoad={handleLoadScene}
           onUpdate={handleUpdateScene}
           onDelete={deleteScene}
-          presetsButtonRef={presetsButtonRef}
+          scenesButtonRef={scenesButtonRef}
         />
           <div className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-3 rounded-t-2xl sm:rounded-2xl border border-white/15 border-b-0 sm:border-b bg-black/55 p-3 text-white shadow-2xl backdrop-blur-md md:grid-cols-[1fr_auto_1fr] md:gap-5 md:px-5 md:rounded-2xl md:border-b">
             <div className="min-w-0 text-center md:text-left">  
@@ -349,14 +349,14 @@ const handleUpdateScene = (id: string, name: string, included: SceneIncluded) =>
                 </svg>
               </button>
               <button
-                ref={presetsButtonRef}
+                ref={scenesButtonRef}
                 className={`grid h-12 w-12 place-items-center rounded-full border transition sm:h-11 sm:w-11 ${
                   showScenes 
                     ? "border-emerald-300/70 bg-emerald-300/20"
                     : "border-white/15 bg-white/10 hover:bg-white/15"
                 }`}
                 onClick={handleScenesToggle}
-                aria-label="Open presets"
+                aria-label="Open scenes"
               >
                 <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                   <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" />

@@ -10,7 +10,7 @@ interface Props {
   onLoad: (scene: Scene) => void;
   onUpdate: (id: string, name: string, included: SceneIncluded) => void;
   onDelete: (id: string) => void;
-  presetsButtonRef?: React.RefObject<HTMLButtonElement | null>;
+  scenesButtonRef?: React.RefObject<HTMLButtonElement | null>;
 }
 
 const INCLUDED_LABELS: { key: keyof SceneIncluded; label: string }[] = [
@@ -27,10 +27,10 @@ function ScenesPanel({
   onLoad,
   onUpdate,
   onDelete,
-  presetsButtonRef,
+  scenesButtonRef,
 }: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
-  useClickOutside(panelRef, setShowScenes, showScenes, presetsButtonRef ? [presetsButtonRef] : undefined);
+  useClickOutside(panelRef, setShowScenes, showScenes, scenesButtonRef ? [scenesButtonRef] : undefined);
 
   const [name, setName] = useState("");
   const [included, setIncluded] = useState<SceneIncluded>({
